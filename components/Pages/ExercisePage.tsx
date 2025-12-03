@@ -19,8 +19,8 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import ReportPainSvg from "@/components/ReportPainSvg";
-import WheelPickerExpo from "react-native-wheel-picker-expo";
+import ReportPainSvg from '@/components/ReportPainSvg';
+import WheelPickerExpo from 'react-native-wheel-picker-expo';
 
 const ExercisePage = ({
     id,
@@ -633,7 +633,7 @@ const ExercisePage = ({
                                 height={204}
                                 width={279}
                                 items={exertions}
-                                initialSelectedIndex={3}
+                                initialSelectedIndex={7}
                                 onChange={({ item }) => setSelectedPainExertion(item?.value)}
                             />
 
@@ -800,6 +800,72 @@ const ExercisePage = ({
                 {exercise?.modality === 'repetition-based' &&
                     <View style={styles.cardMainContainer}>
                         <Text style={styles.cardMainText}>in Today’s workout</Text>
+
+                        {exercise?.lower_intensity &&
+                            <View
+                                style={{
+                                    backgroundColor: '#404518',
+                                    paddingHorizontal: 8,
+                                    paddingVertical: 4,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    gap: 6,
+                                    marginBottom: 8,
+                                    alignSelf: 'flex-start'
+                                }}
+                            >
+                                <Image
+                                    source={require('@/assets/images/lower-intensity-icon.png')}
+                                    style={{ width: 12, height: 12 }}
+                                />
+
+                                <Text
+                                    ellipsizeMode='tail'
+                                    numberOfLines={1}
+                                    fontFamily={'CeraCY-Regular'}
+                                    style={{
+                                        fontSize: 16,
+                                        lineHeight: 16,
+                                        color: '#FFFFFF'
+                                    }}
+                                >
+                                    Lower intensity
+                                </Text>
+                            </View>
+                        }
+
+                        {exercise?.alternative_exercise &&
+                            <View
+                                style={{
+                                    backgroundColor: '#404518',
+                                    paddingHorizontal: 8,
+                                    paddingVertical: 4,
+                                    flexDirection: 'row',
+                                    gap: 6,
+                                    alignItems: 'center',
+                                    marginBottom: 8,
+                                    alignSelf: 'flex-start'
+                                }}
+                            >
+                                <Image
+                                    source={require('@/assets/images/arrows-icon.png')}
+                                    style={{ width: 12, height: 12 }}
+                                />
+
+                                <Text
+                                    ellipsizeMode='tail'
+                                    numberOfLines={1}
+                                    fontFamily={'CeraCY-Regular'}
+                                    style={{
+                                        fontSize: 16,
+                                        lineHeight: 16,
+                                        color: '#FFFFFF'
+                                    }}
+                                >
+                                    Alternative
+                                </Text>
+                            </View>
+                        }
 
                         {exercise?.calculated_sets.length === 0 ?
                             <View style={styles.cardInnerContainer}>

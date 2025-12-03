@@ -736,7 +736,7 @@ const ExercisesPage = ({
                                 height={204}
                                 width={279}
                                 items={exertions}
-                                initialSelectedIndex={3}
+                                initialSelectedIndex={7}
                                 onChange={({ item }) => setSelectedPainExertion(item?.value)}
                             />
 
@@ -917,7 +917,7 @@ const ExercisesPage = ({
                             }}
                             fontFamily={'CeraCY-Regular'}
                         >
-                            Painful area: Left shoulder
+                            Painful area: {rehab?.painful_area}
                         </Text>
 
                         {rehab?.exercises?.map((value: any) =>
@@ -1068,6 +1068,72 @@ const ExercisesPage = ({
                                 />
                             </TouchableOpacity>
                         </View>
+
+                        {value?.lower_intensity &&
+                            <View
+                                style={{
+                                    backgroundColor: '#404518',
+                                    paddingHorizontal: 8,
+                                    paddingVertical: 4,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    gap: 6,
+                                    marginBottom: 8,
+                                    alignSelf: 'flex-start'
+                                }}
+                            >
+                                <Image
+                                    source={require('@/assets/images/lower-intensity-icon.png')}
+                                    style={{ width: 12, height: 12 }}
+                                />
+
+                                <Text
+                                    ellipsizeMode='tail'
+                                    numberOfLines={1}
+                                    fontFamily={'CeraCY-Regular'}
+                                    style={{
+                                        fontSize: 16,
+                                        lineHeight: 16,
+                                        color: '#FFFFFF'
+                                    }}
+                                >
+                                    Lower intensity
+                                </Text>
+                            </View>
+                        }
+
+                        {value?.alternative_exercise &&
+                            <View
+                                style={{
+                                    backgroundColor: '#404518',
+                                    paddingHorizontal: 8,
+                                    paddingVertical: 4,
+                                    flexDirection: 'row',
+                                    gap: 6,
+                                    alignItems: 'center',
+                                    marginBottom: 8,
+                                    alignSelf: 'flex-start'
+                                }}
+                            >
+                                <Image
+                                    source={require('@/assets/images/arrows-icon.png')}
+                                    style={{ width: 12, height: 12 }}
+                                />
+
+                                <Text
+                                    ellipsizeMode='tail'
+                                    numberOfLines={1}
+                                    fontFamily={'CeraCY-Regular'}
+                                    style={{
+                                        fontSize: 16,
+                                        lineHeight: 16,
+                                        color: '#FFFFFF'
+                                    }}
+                                >
+                                    Alternative
+                                </Text>
+                            </View>
+                        }
 
                         {value?.modality === 'repetition-based' &&
                             <View style={styles.cardContainer}>
@@ -1305,7 +1371,7 @@ const ExercisesPage = ({
                                             height={204}
                                             width={279}
                                             items={exertions}
-                                            initialSelectedIndex={3}
+                                            initialSelectedIndex={7}
                                             onChange={({ item }) => setSelectedExertion(item.value)}
                                         />
                                     </View>
@@ -2141,7 +2207,7 @@ const ExercisesPage = ({
                                             height={204}
                                             width={279}
                                             items={exertions}
-                                            initialSelectedIndex={3}
+                                            initialSelectedIndex={7}
                                             onChange={({ item }) => setSelectedExertion(item.value)}
                                         />
                                     </View>
@@ -2553,7 +2619,7 @@ const ExercisesPage = ({
                                             height={204}
                                             width={279}
                                             items={exertions}
-                                            initialSelectedIndex={3}
+                                            initialSelectedIndex={7}
                                             onChange={({ item }) => setSelectedExertion(item.value)}
                                         />
                                     </View>
