@@ -42,6 +42,7 @@ const ExercisesPage = ({
 
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [exercise, setExercise] = useState<any>(null);
+    const [rehab, setRehab] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
     const [selectedStep, setSelectedStep] = useState<number>(1);
@@ -505,6 +506,7 @@ const ExercisesPage = ({
 
         if(response.ok) {
             setExercise(response.body?.workout);
+            setRehab(response.body?.rehab);
         }
 
         setLoading(false);
@@ -869,6 +871,168 @@ const ExercisesPage = ({
             </ImageBackground>
 
             <View style={{ paddingHorizontal: 24 }}>
+                {rehab &&
+                    <View
+                        style={{
+                            width: '100%',
+                            position: 'relative',
+                            padding: 16,
+                            backgroundColor: '#404518',
+                            marginBottom: 40
+                        }}
+                    >
+                        <View style={styles.triangle} />
+
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: 8,
+                                marginBottom: 18
+                            }}
+                        >
+                            <Image
+                                source={require('@/assets/images/cross-icon.png')}
+                                style={{ width: 20, height: 20 }}
+                            />
+
+                            <TextBold
+                                style={{
+                                    color: '#FFFFFF',
+                                    fontSize: 20,
+                                    lineHeight: 20,
+                                    textTransform: 'uppercase'
+                                }}
+                            >
+                                Rehab Mode
+                            </TextBold>
+                        </View>
+
+                        <Text
+                            style={{
+                                color: '#FFFFFF',
+                                marginBottom: 16,
+                                fontSize: 16,
+                                lineHeight: 16
+                            }}
+                            fontFamily={'CeraCY-Regular'}
+                        >
+                            Painful area: Left shoulder
+                        </Text>
+
+                        {rehab?.exercises?.map((value: any) =>
+                            <TouchableOpacity
+                                key={value?.id}
+                                style={{
+                                    padding: 16,
+                                    backgroundColor: '#24242480',
+                                    marginBottom: 16
+                                }}
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    router.push(`/workout/${id}?page_type=exercise&exercise_id=${value?.id}`);
+                                }}
+                            >
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between'
+                                }}>
+                                    <TextBold
+                                        ellipsizeMode='tail'
+                                        numberOfLines={1}
+                                        style={styles.cardHeadingText}
+                                    >
+                                        {value?.name}
+                                    </TextBold>
+
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={styles.buttonImageContainer}
+                                    >
+                                        <Image
+                                            source={require('@/assets/images/dots.png')}
+                                            style={{ width: 3, height: 15 }}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+
+                                {value?.modality === 'repetition-based' &&
+                                    <View style={styles.cardContainer}>
+                                        <View>
+                                            <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Sets</Text>
+                                            <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
+                                                {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets.length}
+                                            </Text>
+                                        </View>
+
+                                        <View>
+                                            <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Reps</Text>
+                                            <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
+                                                {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets[0]?.reps ?? '?'}
+                                            </Text>
+                                        </View>
+
+                                        <View>
+                                            <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Weight</Text>
+                                            <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
+                                                {value?.calculated_sets.length === 0 ? '?' : `${value?.calculated_sets[0]?.weight} KG` || '?'}
+                                            </Text>
+                                        </View>
+
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={styles.buttonImageContainer}
+                                        >
+                                            <Image
+                                                source={require('@/assets/images/line-dots.png')}
+                                                style={{ width: 18, height: 15 }}
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                }
+
+                                {value?.modality && value?.modality !== 'repetition-based' &&
+                                    <Text
+                                        fontFamily='CeraCY-Regular'
+                                        style={{
+                                            color: '#FFFFFF',
+                                            marginTop: 16,
+                                            textTransform: 'uppercase'
+                                        }}
+                                    >
+                                        {value.modality.replace(/-/g, ' ')}
+                                    </Text>
+                                }
+
+                                {value?.modality === 'repetition-based' && value?.calculated_sets.length === 0 &&
+                                    <PolygonButtonCustom
+                                        text='Let’s calculate this'
+                                        style={{
+                                            width: '80%',
+                                            marginTop: 16
+                                        }}
+                                        onPress={() => openCalculateModal(value ?? null)}
+                                    />
+                                }
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                }
+
+                {rehab &&
+                    <Text
+                        style={{
+                            color: '#FFFFFF',
+                            fontSize: 16,
+                            lineHeight: 16,
+                            marginBottom: 16
+                        }}
+                        fontFamily={'CeraCY-Regular'}
+                    >
+                        Continue with exercises that avoids painful area:
+                    </Text>
+                }
+
                 {exercise?.exercises?.map((value: any) =>
                     <TouchableOpacity
                         key={value?.id}
@@ -2703,7 +2867,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 16,
         marginBottom: 20,
-        color: '#FFFFFF'
+        color: '#FFFFFF',
+        maxWidth: '80%'
     },
     cardText: {
         color: '#FFFFFF',
@@ -2725,6 +2890,20 @@ const styles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 16,
         fontWeight: '500'
+    },
+    triangle: {
+        width: 0,
+        height: 0,
+        borderLeftWidth: 40,
+        borderRightWidth: 40,
+        borderBottomWidth: 40,
+        borderLeftColor: 'transparent',
+        borderRightColor: 'transparent',
+        borderBottomColor: '#000000',
+        position: 'absolute',
+        top: -20,
+        right: -26,
+        transform: [{ rotate: '45deg' }],
     }
 });
 
