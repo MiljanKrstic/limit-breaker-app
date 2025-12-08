@@ -113,7 +113,7 @@ const Index = () =>
                         name={dailyFitness?.name}
                         description={dailyFitness?.description}
                         onPress={() => {
-                            router.push(`/workout/${dailyFitness?.id}?page_type=workout`);
+                            router.push(`/workout/${dailyFitness?.id}?page_type=exercises`);
                         }}
                     />
                 </View>
@@ -142,7 +142,7 @@ const Index = () =>
                         name={dailyCrossFit?.name}
                         description={dailyCrossFit?.description}
                         onPress={() => {
-                            router.push(`/workout/${dailyCrossFit?.id}?page_type=workout`);
+                            router.push(`/workout/${dailyCrossFit?.id}?page_type=exercises`);
                         }}
                     />
                 )}

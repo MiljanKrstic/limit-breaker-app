@@ -930,7 +930,7 @@ const ExercisesPage = ({
                                 }}
                                 activeOpacity={0.8}
                                 onPress={() => {
-                                    router.push(`/workout/${id}?page_type=exercise&exercise_id=${value?.id}`);
+                                    router.push(`/workout/${rehab?.workout_id}?page_type=exercise&exercise_id=${value?.id}`);
                                 }}
                             >
                                 <View style={{
