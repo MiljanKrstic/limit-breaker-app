@@ -137,7 +137,7 @@ const WeekActivityCalendar = () =>
                                             />
                                         }
 
-                                        {weekDay?.rehab &&
+                                        {weekDay?.rehab && !weekDay.has_completed_workout &&
                                             <Image
                                                 source={require('@/assets/images/cross-icon.png')}
                                                 style={{
@@ -182,7 +182,7 @@ const WeekActivityCalendar = () =>
                         </TextBold>
                     </View>
 
-                    {previousWeekCount === 0 &&
+                    {currentWeekCount === 0 &&
                         <View style={styles.noActivityContainer}>
                             <View style={styles.noActivityContainerInner}>
                                 <Text style={styles.noActivityText}>
@@ -208,7 +208,7 @@ const WeekActivityCalendar = () =>
                         </View>
                     }
 
-                    {currentWeek > 0 ?
+                    {currentWeekCount > 0 ?
                         <>
                             {currentWeek?.days.map((weekDay: any, index: number) =>
                                 <View
@@ -222,7 +222,7 @@ const WeekActivityCalendar = () =>
                                         />
                                     }
 
-                                    {weekDay?.rehab &&
+                                    {weekDay?.rehab && !weekDay.has_completed_workout &&
                                         <Image
                                             source={require('@/assets/images/cross-icon.png')}
                                             style={{
