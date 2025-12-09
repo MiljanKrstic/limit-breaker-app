@@ -16,7 +16,7 @@ type WorkoutRouteParams = {
 
 const Header = () =>
 {
-    const { getCategoryId } = asyncStorage();
+    const { getCategoryId, getWorkoutCategoryId } = asyncStorage();
     const route = useRoute<RouteProp<WorkoutRouteParams, 'Workout'>>();
     const router = useRouter();
 
@@ -31,13 +31,15 @@ const Header = () =>
         }
 
         if (page_type === 'exercise') {
-            router.push(`/workout/${id}?page_type=exercises`);
-        } else if (page_type === 'exercises') {
-
             const categoryId = await getCategoryId();
-            if(!categoryId) router.back();
+            if(!categoryId) router.push(`/workout/${id}?page_type=exercises`);
 
-            router.push(`/workout/${categoryId}?page_type=workout`);
+            router.push(`/workout/${categoryId}?page_type=exercises`);
+        } else if (page_type === 'exercises') {
+            const workoutCategoryId = await getWorkoutCategoryId();
+            if(!workoutCategoryId) router.back();
+
+            router.push(`/workout/${workoutCategoryId}?page_type=workout`);
         } else {
             router.back();
         }

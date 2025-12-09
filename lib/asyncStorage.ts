@@ -19,13 +19,22 @@ const asyncStorage = () =>
         return categoryId ? JSON.parse(categoryId) : categoryId;
     };
 
+    const setWorkoutCategoryId = async (categoryId: any) => await AsyncStorage.setItem('workoutCategoryId', JSON.stringify(categoryId));
+    const getWorkoutCategoryId = async () =>
+    {
+        const categoryId = await AsyncStorage.getItem('workoutCategoryId') ?? null;
+        return categoryId ? JSON.parse(categoryId) : categoryId;
+    };
+
     return {
         setBearerToken,
         getBearerToken,
         setUserData,
         getUserData,
         setCategoryId,
-        getCategoryId
+        getCategoryId,
+        setWorkoutCategoryId,
+        getWorkoutCategoryId
     }
 };
 
