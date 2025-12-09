@@ -2,14 +2,64 @@ import Text from '@/components/Text';
 import TextBold from '@/components/TextBold';
 
 import { Image } from 'expo-image';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import React from "react";
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+
+import React, { useEffect, useState } from 'react';
+import useAuthorizedFetch from '@/hooks/useAuthorizedFetch';
 
 type Day = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
-const weekDays: Day[] = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
 
 const WeekActivityCalendar = () =>
 {
+    const authorizedFetch = useAuthorizedFetch();
+
+    const [currentWeek, setCurrentWeek] = useState<any>(null);
+    const [previousWeek, setPreviousWeek] = useState<any>(null);
+
+    const [currentWeekCount, setCurrentWeekCount] = useState<number>(0);
+    const [previousWeekCount, setPreviousWeekCount] = useState<number>(0);
+
+    const countCompletedWorkouts = (week: any) =>
+    {
+        if (!week?.days) return 0;
+
+        return week.days.reduce((count: number, day: any) => {
+            return count + (day.has_completed_workout ? 1 : 0);
+        }, 0);
+    };
+
+    const fetchData = async () =>
+    {
+        const response = await authorizedFetch('GET', `workouts/calendar`);
+
+        if(response.ok) {
+            const {
+                current_week,
+                previous_week
+            } = response?.body;
+
+            setCurrentWeek(current_week);
+            setPreviousWeek(previous_week);
+
+            setCurrentWeekCount(countCompletedWorkouts(current_week));
+            setPreviousWeekCount(countCompletedWorkouts(previous_week));
+        }
+    };
+
+    useEffect(() => {
+        fetchData().then();
+    }, []);
+
+    const getDayAbbreviation = (dateString: string) =>
+    {
+        const weekDays: Day[] = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+
+        const date = new Date(dateString);
+        const dayIndex = (date.getDay() + 6) % 7;
+
+        return weekDays[dayIndex];
+    };
+
     return (
         <View>
             <View style={styles.seeHistoryContainer}>
@@ -17,16 +67,17 @@ const WeekActivityCalendar = () =>
                     fontFamily='CeraCY-Regular'
                     style={styles.finishedWorkoutsText}
                 >
-                    12 Finished workouts
+                    {currentWeekCount + previousWeekCount} Finished workouts
                 </Text>
 
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                >
-                    <Text style={styles.noActivityEnterText}>
-                        See History
-                    </Text>
-                </TouchableOpacity>
+                {/* TODO::add this when backend finishes */}
+                {/*<TouchableOpacity*/}
+                {/*    activeOpacity={0.8}*/}
+                {/*>*/}
+                {/*    <Text style={styles.noActivityEnterText}>*/}
+                {/*        See History*/}
+                {/*    </Text>*/}
+                {/*</TouchableOpacity>*/}
             </View>
 
             <View style={styles.mainWeekDayContainer}>
@@ -35,29 +86,31 @@ const WeekActivityCalendar = () =>
                         position: 'relative'
                     }}
                 >
-                    <View style={styles.noActivityContainer}>
-                        <View style={styles.noActivityContainerInner}>
-                            <Text style={styles.noActivityText}>
-                                Any physical activity?
-                            </Text>
+                    {previousWeekCount === 0 &&
+                        <View style={styles.noActivityContainer}>
+                            <View style={styles.noActivityContainerInner}>
+                                <Text style={styles.noActivityText}>
+                                    Any physical activity?
+                                </Text>
 
-                            <Image
-                                source={require('@/assets/images/info-tooltip.png')}
-                                style={{ width: 18, height: 18 }}
-                            />
+                                <Image
+                                    source={require('@/assets/images/info-tooltip.png')}
+                                    style={{ width: 18, height: 18 }}
+                                />
+                            </View>
+
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={{
+                                    width: '20%'
+                                }}
+                            >
+                                <Text style={styles.noActivityEnterText}>
+                                    Enter
+                                </Text>
+                            </TouchableOpacity>
                         </View>
-
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={{
-                                width: '20%'
-                            }}
-                        >
-                            <Text style={styles.noActivityEnterText}>
-                                Enter
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
+                    }
 
                     <View style={styles.weekDayParentContainer}>
                         <View style={styles.weekContainer}>
@@ -65,18 +118,56 @@ const WeekActivityCalendar = () =>
                                 Last Week
                             </TextBold>
 
-                            <TextBold style={styles.weekTextRed}>
-                                0/3
+                            <TextBold style={previousWeekCount > 0 ? styles.weekText : styles.weekTextRed}>
+                                {previousWeekCount}/7
                             </TextBold>
                         </View>
 
-                        {weekDays.map((_, index) =>
-                            <View
-                                key={index}
-                                style={styles.weekDayContainerDark}
-                            >
-                            </View>
-                        )}
+                        {previousWeekCount > 0 ?
+                            <>
+                                {previousWeek?.days.map((weekDay: any, index: number) =>
+                                    <View
+                                        key={index}
+                                        style={styles.weekDayContainer}
+                                    >
+                                        {weekDay.has_completed_workout &&
+                                            <Image
+                                                source={require('@/assets/images/checked-icon.png')}
+                                                style={styles.weekDayImage}
+                                            />
+                                        }
+
+                                        {weekDay?.rehab &&
+                                            <Image
+                                                source={require('@/assets/images/cross-icon.png')}
+                                                style={{
+                                                    width: 13,
+                                                    height: 13,
+                                                    objectFit: 'contain',
+                                                    marginBottom: 11
+                                                }}
+                                            />
+                                        }
+
+                                        <Text
+                                            fontFamily='CeraCY-Regular'
+                                            style={styles.weekDayText}
+                                        >
+                                            {getDayAbbreviation(weekDay?.date)}
+                                        </Text>
+                                    </View>
+                                )}
+                            </> :
+                            <>
+                                {previousWeek?.days.map((_: any, index: number) =>
+                                    <View
+                                        key={index}
+                                        style={styles.weekDayContainerDark}
+                                    >
+                                    </View>
+                                )}
+                            </>
+                        }
                     </View>
                 </View>
 
@@ -86,31 +177,82 @@ const WeekActivityCalendar = () =>
                             This Week
                         </TextBold>
 
-                        <TextBold style={styles.weekText}>
-                            1/3
+                        <TextBold style={currentWeekCount > 0 ? styles.weekText : styles.weekTextRed}>
+                            {currentWeekCount}/7
                         </TextBold>
                     </View>
 
-                    {weekDays.map((weekDay, index) =>
-                        <View
-                            key={index}
-                            style={styles.weekDayContainer}
-                        >
-                            {index === 2 &&
-                                <Image
-                                    source={require('@/assets/images/checked-icon.png')}
-                                    style={styles.weekDayImage}
-                                />
-                            }
+                    {previousWeekCount === 0 &&
+                        <View style={styles.noActivityContainer}>
+                            <View style={styles.noActivityContainerInner}>
+                                <Text style={styles.noActivityText}>
+                                    Any physical activity?
+                                </Text>
 
-                            <Text
-                                fontFamily='CeraCY-Regular'
-                                style={styles.weekDayText}
+                                <Image
+                                    source={require('@/assets/images/info-tooltip.png')}
+                                    style={{ width: 18, height: 18 }}
+                                />
+                            </View>
+
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={{
+                                    width: '20%'
+                                }}
                             >
-                                {weekDay}
-                            </Text>
+                                <Text style={styles.noActivityEnterText}>
+                                    Enter
+                                </Text>
+                            </TouchableOpacity>
                         </View>
-                    )}
+                    }
+
+                    {currentWeek > 0 ?
+                        <>
+                            {currentWeek?.days.map((weekDay: any, index: number) =>
+                                <View
+                                    key={index}
+                                    style={styles.weekDayContainer}
+                                >
+                                    {weekDay.has_completed_workout &&
+                                        <Image
+                                            source={require('@/assets/images/checked-icon.png')}
+                                            style={styles.weekDayImage}
+                                        />
+                                    }
+
+                                    {weekDay?.rehab &&
+                                        <Image
+                                            source={require('@/assets/images/cross-icon.png')}
+                                            style={{
+                                                width: 13,
+                                                height: 13,
+                                                objectFit: 'contain',
+                                                marginBottom: 11
+                                            }}
+                                        />
+                                    }
+
+                                    <Text
+                                        fontFamily='CeraCY-Regular'
+                                        style={styles.weekDayText}
+                                    >
+                                        {getDayAbbreviation(weekDay?.date)}
+                                    </Text>
+                                </View>
+                            )}
+                        </> :
+                        <>
+                            {currentWeek?.days.map((_: any, index: number) =>
+                                <View
+                                    key={index}
+                                    style={styles.weekDayContainerDark}
+                                >
+                                </View>
+                            )}
+                        </>
+                    }
                 </View>
             </View>
         </View>
