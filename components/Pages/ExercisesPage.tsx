@@ -50,20 +50,20 @@ const ExercisesPage = ({
     const [maxRpeSteps, setMaxRpeSteps] = useState<number>(0);
 
     const exertions = [
-        { label: '0 No exertion', value: 0 },
-        { label: '1 Very light', value: 1 },
-        { label: '2 Light', value: 2 },
-        { label: '3 Light', value: 3 },
-        { label: '4 Moderate', value: 4 },
-        { label: '5 Moderate', value: 5 },
-        { label: '6 High', value: 6 },
-        { label: '7 High', value: 7 },
-        { label: '8 Very hard', value: 8 },
-        { label: '9 Very hard', value: 9 },
-        { label: '10 Maximum effort', value: 10 }
+        { label: '0 No exertion', value: 0, description: ''},
+        { label: '1 Very light', value: 1, description: 'Bare minimum exertion, a getle stroll through the woods. Could continue all day.' },
+        { label: '2 Light', value: 2, description: 'Non-taxing, very gantle and easy to maintain a conversation - could continue for hours.' },
+        { label: '3 Light', value: 3, description: 'Able to maintain a conversation without getting outh of breath while running.' },
+        { label: '4 Moderate', value: 4, description: 'Slight \'push\' but still at a pace which you could speak a few sentences without struggling.' },
+        { label: '5 Moderate', value: 5, description: 'A pace that requires some pushing and effort to maintain, still able to hold a conversation.' },
+        { label: '6 High', value: 6, description: 'Labored breathing, challanging and uncomfortable but sustainable for 30-60 mins.' },
+        { label: '7 High', value: 7, description: 'Can speak in short sentences, becomes uncomfortable quickly. Requires constant effort.' },
+        { label: '8 Very hard', value: 8, description: 'Requires focus to maintain, hard to say more than 2-3 words, good for Cooper Tests, 5k PRs.' },
+        { label: '9 Very hard', value: 9, description: 'Hard to speak, brething labored after a few seconds, requires foucs, good for 1-min intervals.' },
+        { label: '10 Maximum effort', value: 10, description: 'Hard to speak, brething labored after a few seconds, requires foucs, good for 1-min intervals.' }
     ];
 
-    const [selectedExertion, setSelectedExertion] = useState<number>(exertions[3].value);
+    const [selectedExertion, setSelectedExertion] = useState<any>(exertions[7]);
     const [rpeExertions, setRpeExertions] = useState<any[]>([]);
     const [rating, setRating] = useState<number>(0);
 
@@ -475,11 +475,11 @@ const ExercisesPage = ({
             const existingIndex = prev.findIndex(entry => Object.keys(entry)[0] === String(id));
             if (existingIndex !== -1) {
                 const updated = [...prev];
-                updated[existingIndex] = { [id]: selectedExertion };
+                updated[existingIndex] = { [id]: selectedExertion?.value };
                 return updated;
             }
 
-            return [...prev, { [id]: selectedExertion }];
+            return [...prev, { [id]: selectedExertion?.value }];
         });
 
         setSelectedStep(prev => prev + 1);
@@ -1372,7 +1372,7 @@ const ExercisesPage = ({
                                             width={279}
                                             items={exertions}
                                             initialSelectedIndex={7}
-                                            onChange={({ item }) => setSelectedExertion(item.value)}
+                                            onChange={({ item }) => setSelectedExertion(item)}
                                         />
                                     </View>
 
@@ -2208,7 +2208,7 @@ const ExercisesPage = ({
                                             width={279}
                                             items={exertions}
                                             initialSelectedIndex={7}
-                                            onChange={({ item }) => setSelectedExertion(item.value)}
+                                            onChange={({ item }) => setSelectedExertion(item)}
                                         />
                                     </View>
 
@@ -2610,18 +2610,48 @@ const ExercisesPage = ({
 
                                     <View
                                         style={{
-                                            flexDirection: 'row',
+                                            flexDirection: 'column',
                                             justifyContent: 'center'
                                         }}
                                     >
-                                        <WheelPickerExpo
-                                            backgroundColor='#000000'
-                                            height={204}
-                                            width={279}
-                                            items={exertions}
-                                            initialSelectedIndex={7}
-                                            onChange={({ item }) => setSelectedExertion(item.value)}
-                                        />
+                                        <Text
+                                            style={{
+                                                fontSize: 20,
+                                                lineHeight: 20,
+                                                color: '#FFFFFF',
+                                                textAlign: 'center',
+                                                marginBottom: 6
+                                            }}
+                                        >
+                                            {selectedExertion?.label?.split(' ')?.slice(1)?.join(' ')}
+                                        </Text>
+
+                                        <Text
+                                            style={{
+                                                fontSize: 14,
+                                                lineHeight: 14,
+                                                color: '#FFFFFF',
+                                                textAlign: 'center'
+                                            }}
+                                        >
+                                            {selectedExertion?.description}
+                                        </Text>
+
+                                        <View
+                                            style={{
+                                                paddingLeft: 15,
+                                                marginTop: 16
+                                            }}
+                                        >
+                                            <WheelPickerExpo
+                                                backgroundColor='#000000'
+                                                height={204}
+                                                width={279}
+                                                items={exertions}
+                                                initialSelectedIndex={7}
+                                                onChange={({ item }) => setSelectedExertion(item)}
+                                            />
+                                        </View>
                                     </View>
 
                                     <View
