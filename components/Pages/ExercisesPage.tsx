@@ -606,19 +606,56 @@ const ExercisesPage = ({
         setLoading(false);
     };
 
-    const fetchAlternativeExercise = async (alternateExerciseId?: string) =>
+    const fetchAlternativeExercise = async (
+        workoutId?: string,
+        exerciseId?: string
+    ) =>
     {
         setLoading(true);
 
-        if(!alternateExerciseId) {
+        if(!workoutId) {
             setLoading(false);
             return;
         }
 
-        const response = await authorizedFetch('GET', `exercise/get?workout_id=${id}&exercise_id=${alternateExerciseId}`);
+        if(!exerciseId) {
+            setLoading(false);
+            return;
+        }
+
+        const response = await authorizedFetch('GET', `exercise/get?workout_id=${workoutId}&exercise_id=${exerciseId}`);
 
         if(response.ok) {
             await fetchData();
+        }
+
+        setLoading(false);
+    };
+
+    const [singleExerciseRpe, setSingleExerciseRpe] = useState<any>(exertions[7]);
+    const [isSingleExerciseRpeModalOpen, setIsSingleExerciseModalOpen] = useState<boolean>(false);
+    const [singleExerciseModalInfo, setSingleExerciseModalInfo] = useState<any | null>(null);
+
+    const fetchSingleExerciseRpe = async () =>
+    {
+        setLoading(true);
+
+        if(!singleExerciseModalInfo?.id) {
+            setLoading(false);
+            return;
+        }
+
+        const response = await authorizedFetch('POST',
+            `workouts/insert-rpe`,
+            {
+                exercise_id: singleExerciseModalInfo?.id,
+                workout_id: id,
+                rpe: singleExerciseRpe?.value
+            });
+
+        if(response.ok) {
+            await fetchData();
+            setIsSingleExerciseModalOpen(false);
         }
 
         setLoading(false);
@@ -971,7 +1008,7 @@ const ExercisesPage = ({
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         style={[styles.buttonImageContainer, { marginBottom: 19 }]}
-                                        onPress={() => fetchAlternativeExercise(value?.id)}
+                                        onPress={() => fetchAlternativeExercise(rehab?.workout_id, value?.id)}
                                         disabled={!value?.alternative_exercise}
                                     >
                                         <Image
@@ -995,6 +1032,10 @@ const ExercisesPage = ({
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         style={styles.buttonImageContainer}
+                                        onPress={() => {
+                                            setSingleExerciseModalInfo(value);
+                                            setIsSingleExerciseModalOpen(true);
+                                        }}
                                     >
                                         <Text
                                             fontFamily={'CeraCY-Regular'}
@@ -1127,7 +1168,7 @@ const ExercisesPage = ({
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 style={[styles.buttonImageContainer, { marginBottom: 19 }]}
-                                onPress={() => fetchAlternativeExercise(value?.id)}
+                                onPress={() => fetchAlternativeExercise(id, value?.id)}
                                 disabled={!value?.alternative_exercise}
                             >
                                 <Image
@@ -1151,6 +1192,10 @@ const ExercisesPage = ({
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 style={styles.buttonImageContainer}
+                                onPress={() => {
+                                    setSingleExerciseModalInfo(value);
+                                    setIsSingleExerciseModalOpen(true);
+                                }}
                             >
                                 <Text
                                     fontFamily={'CeraCY-Regular'}
@@ -3022,6 +3067,92 @@ const ExercisesPage = ({
                 setModalVisible={() => closeReportPainModal()}
             >
                 {renderReportPain()}
+            </MainModal>
+
+            <MainModal
+                modalVisible={isSingleExerciseRpeModalOpen}
+                setModalVisible={() => setIsSingleExerciseModalOpen(false)}
+            >
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'space-between'
+                    }}
+                >
+                    <View>
+                        <Text
+                            fontFamily='ChakraPetch-Regular'
+                            style={{
+                                fontSize: 16,
+                                lineHeight: 16,
+                                textAlign: 'center',
+                                marginBottom: 8,
+                                color: '#FFFFFF'
+                            }}
+                        >
+                            How did that feel?
+                        </Text>
+
+                        <TextBold
+                            style={{
+                                fontSize: 24,
+                                lineHeight: 24,
+                                color: '#FFFFFF',
+                                textAlign: 'center'
+                            }}
+                        >
+                            {singleExerciseModalInfo?.name}
+                        </TextBold>
+                    </View>
+
+                    <View>
+                        <Text
+                            style={{
+                                fontSize: 20,
+                                lineHeight: 20,
+                                color: '#FFFFFF',
+                                textAlign: 'center',
+                                marginBottom: 6
+                            }}
+                        >
+                            {singleExerciseRpe?.label?.split(' ')?.slice(1)?.join(' ')}
+                        </Text>
+
+                        <Text
+                            style={{
+                                fontSize: 14,
+                                lineHeight: 14,
+                                color: '#FFFFFF',
+                                textAlign: 'center'
+                            }}
+                        >
+                            {singleExerciseRpe?.description}
+                        </Text>
+                    </View>
+
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center'
+                        }}
+                    >
+                        <WheelPickerExpo
+                            backgroundColor='#000000'
+                            height={204}
+                            width={279}
+                            items={exertions}
+                            initialSelectedIndex={7}
+                            onChange={({ item }) => setSingleExerciseRpe(item)}
+                        />
+                    </View>
+
+                    <PolygonButtonCustom
+                        text='Submit'
+                        cardColor={'#EDFF4B'}
+                        onPress={() => fetchSingleExerciseRpe()}
+                    />
+                </View>
             </MainModal>
         </AppLayout>
     );
