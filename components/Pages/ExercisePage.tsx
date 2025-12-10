@@ -451,17 +451,11 @@ const ExercisePage = ({
     const [reportPainModalVisible, setReportPainModalVisible] = useState<boolean>(false);
 
     const exertions = [
-        { label: '0 No exertion', value: 0 },
-        { label: '1 Very light', value: 1 },
-        { label: '2 Light', value: 2 },
-        { label: '3 Light', value: 3 },
-        { label: '4 Moderate', value: 4 },
-        { label: '5 Moderate', value: 5 },
-        { label: '6 High', value: 6 },
-        { label: '7 High', value: 7 },
-        { label: '8 Very hard', value: 8 },
-        { label: '9 Very hard', value: 9 },
-        { label: '10 Maximum effort', value: 10 }
+        { label: '1 Minimal Pain', value: 1, description: 'Very light discomfort. You feel it, but it doesn\'t affect your movement or confidence.' },
+        { label: '2 Mild Pain', value: 2, description: 'Uncomfortable but easy to train through. You notice it in specific movements, but your technique stays normal.' },
+        { label: '3 Moderate Pain', value: 3, description: 'Pain that makes you change something. You can still train, but you adjust the way you move to avoid the feeling. Pain shows during exercise, not at rest.' },
+        { label: '4 High Pain', value: 4, description: 'Movement becomes difficult. You avoid certain movements, compensate, or lose clean technique. Pain is present during and after the session.' },
+        { label: '5 Severe Pain', value: 5, description: 'Sharp pain that stops activity. You cannot use the area without immediate discomfort. Pain affects daily activities, not just training.' },
     ];
 
     const closeReportPainModal = () =>
@@ -633,7 +627,7 @@ const ExercisePage = ({
                                 height={204}
                                 width={279}
                                 items={exertions}
-                                initialSelectedIndex={7}
+                                initialSelectedIndex={3}
                                 onChange={({ item }) => setSelectedPainExertion(item?.value)}
                             />
 
