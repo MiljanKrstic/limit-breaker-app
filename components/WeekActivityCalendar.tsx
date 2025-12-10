@@ -1,11 +1,12 @@
 import Text from '@/components/Text';
 import TextBold from '@/components/TextBold';
+import MainModal from '@/components/MainModal';
+import useAuthorizedFetch from '@/hooks/useAuthorizedFetch';
 
 import { Image } from 'expo-image';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import {View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 
 import React, { useEffect, useState } from 'react';
-import useAuthorizedFetch from '@/hooks/useAuthorizedFetch';
 
 type Day = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
 
@@ -18,6 +19,9 @@ const WeekActivityCalendar = () =>
 
     const [currentWeekCount, setCurrentWeekCount] = useState<number>(0);
     const [previousWeekCount, setPreviousWeekCount] = useState<number>(0);
+
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [completedWorkouts, setCompletedWorkouts] = useState<any[]>([]);
 
     const countCompletedWorkouts = (week: any) =>
     {
@@ -46,6 +50,16 @@ const WeekActivityCalendar = () =>
         }
     };
 
+    const openHistoryModal = async () =>
+    {
+        const response = await authorizedFetch('GET', `workouts/completed`);
+
+        if(response.ok) {
+            setCompletedWorkouts(response?.body?.data);
+            setModalVisible(true);
+        }
+    };
+
     useEffect(() => {
         fetchData().then();
     }, []);
@@ -62,6 +76,52 @@ const WeekActivityCalendar = () =>
 
     return (
         <View>
+            <MainModal
+                modalVisible={modalVisible}
+                setModalVisible={() => setModalVisible(false)}
+            >
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'space-between'
+                    }}
+                >
+                    <TextBold
+                        style={{
+                            color: '#FFFFFF',
+                            fontSize: 26,
+                            lineHeight: 26,
+                            textAlign: 'center',
+                            marginBottom: 30
+                        }}
+                    >
+                        All Time Completed Workouts
+                    </TextBold>
+
+                    <ScrollView>
+                        {completedWorkouts?.map((completedWorkout: any, index: number) =>
+                            <Text
+                                key={completedWorkout?.id}
+                                style={{
+                                    color: '#FFFFFF',
+                                    fontSize: 16,
+                                    lineHeight: 16,
+                                    textAlign: 'left',
+                                    paddingBottom: 16,
+                                    marginBottom: 16,
+                                    textTransform: 'uppercase',
+                                    borderBottomWidth: 1,
+                                    borderBottomColor: '#FFFFFF'
+                                }}
+                            >
+                                {index + 1}: {completedWorkout?.workout_name} - {completedWorkout?.date} / {completedWorkout?.time}
+                            </Text>
+                        )}
+                    </ScrollView>
+                </View>
+            </MainModal>
+
             <View style={styles.seeHistoryContainer}>
                 <Text
                     fontFamily='CeraCY-Regular'
@@ -70,14 +130,14 @@ const WeekActivityCalendar = () =>
                     {currentWeekCount + previousWeekCount} Finished workouts
                 </Text>
 
-                {/* TODO::add this when backend finishes */}
-                {/*<TouchableOpacity*/}
-                {/*    activeOpacity={0.8}*/}
-                {/*>*/}
-                {/*    <Text style={styles.noActivityEnterText}>*/}
-                {/*        See History*/}
-                {/*    </Text>*/}
-                {/*</TouchableOpacity>*/}
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => openHistoryModal()}
+                >
+                    <Text style={styles.noActivityEnterText}>
+                        See History
+                    </Text>
+                </TouchableOpacity>
             </View>
 
             <View style={styles.mainWeekDayContainer}>
