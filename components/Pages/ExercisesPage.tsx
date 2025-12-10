@@ -934,17 +934,67 @@ const ExercisesPage = ({
                                 style={{
                                     padding: 16,
                                     backgroundColor: '#24242480',
-                                    marginBottom: 16
+                                    marginBottom: 16,
+                                    flexDirection: 'row-reverse'
                                 }}
                                 activeOpacity={0.8}
                                 onPress={() => {
                                     router.push(`/workout/${rehab?.workout_id}?page_type=exercise&exercise_id=${value?.id}&rehab=true`);
                                 }}
                             >
-                                <View style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between'
-                                }}>
+                                <View
+                                    style={{
+                                        flexDirection: 'column',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        width: '10%'
+                                    }}
+                                >
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={[styles.buttonImageContainer, { marginBottom: 19 }]}
+                                    >
+                                        <Image
+                                            source={require('@/assets/images/arrows-icon.png')}
+                                            style={{ width: 18, height: 18 }}
+                                        />
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={[styles.buttonImageContainer, { marginBottom: 19 }]}
+                                        disabled={value?.modality === 'repetition-based' && value?.calculated_sets.length === 0}
+                                        onPress={() => openCalculateModal(value ?? null)}
+                                    >
+                                        <Image
+                                            source={require('@/assets/images/mathematical-icon.png')}
+                                            style={{ width: 16, height: 16 }}
+                                        />
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={styles.buttonImageContainer}
+                                    >
+                                        <Text
+                                            fontFamily={'CeraCY-Regular'}
+                                            style={{
+                                                color: '#FFFFFF',
+                                                fontSize: 12,
+                                                lineHeight: 12
+                                            }}
+                                        >
+                                            RPE
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View
+                                    style={{
+                                        width: '85%',
+                                        marginHorizontal: 16
+                                    }}
+                                >
                                     <TextBold
                                         ellipsizeMode='tail'
                                         numberOfLines={1}
@@ -953,75 +1003,65 @@ const ExercisesPage = ({
                                         {value?.name}
                                     </TextBold>
 
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        style={styles.buttonImageContainer}
-                                    >
-                                        <Image
-                                            source={require('@/assets/images/dots.png')}
-                                            style={{ width: 3, height: 15 }}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
+                                    {value?.modality === 'repetition-based' &&
+                                        <View style={styles.cardContainer}>
+                                            <View>
+                                                <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Sets</Text>
+                                                <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
+                                                    {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets.length}
+                                                </Text>
+                                            </View>
 
-                                {value?.modality === 'repetition-based' &&
-                                    <View style={styles.cardContainer}>
-                                        <View>
-                                            <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Sets</Text>
-                                            <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                                {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets.length}
-                                            </Text>
+                                            <View>
+                                                <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Reps</Text>
+                                                <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
+                                                    {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets[0]?.reps ?? '?'}
+                                                </Text>
+                                            </View>
+
+                                            <View>
+                                                <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Weight</Text>
+                                                <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
+                                                    {value?.calculated_sets.length === 0 ? '?' : `${value?.calculated_sets[0]?.weight} KG` || '?'}
+                                                </Text>
+                                            </View>
+
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                style={styles.buttonImageContainer}
+                                            >
+                                                <Image
+                                                    source={require('@/assets/images/line-dots.png')}
+                                                    style={{ width: 18, height: 15 }}
+                                                />
+                                            </TouchableOpacity>
                                         </View>
+                                    }
 
-                                        <View>
-                                            <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Reps</Text>
-                                            <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                                {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets[0]?.reps ?? '?'}
-                                            </Text>
-                                        </View>
-
-                                        <View>
-                                            <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Weight</Text>
-                                            <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                                {value?.calculated_sets.length === 0 ? '?' : `${value?.calculated_sets[0]?.weight} KG` || '?'}
-                                            </Text>
-                                        </View>
-
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            style={styles.buttonImageContainer}
+                                    {value?.modality && value?.modality !== 'repetition-based' &&
+                                        <Text
+                                            fontFamily='CeraCY-Regular'
+                                            style={{
+                                                color: '#FFFFFF',
+                                                marginTop: 16,
+                                                textTransform: 'uppercase'
+                                            }}
                                         >
-                                            <Image
-                                                source={require('@/assets/images/line-dots.png')}
-                                                style={{ width: 18, height: 15 }}
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
-                                }
+                                            {value.modality.replace(/-/g, ' ')}
+                                        </Text>
+                                    }
 
-                                {value?.modality && value?.modality !== 'repetition-based' &&
-                                    <Text
-                                        fontFamily='CeraCY-Regular'
-                                        style={{
-                                            color: '#FFFFFF',
-                                            marginTop: 16,
-                                            textTransform: 'uppercase'
-                                        }}
-                                    >
-                                        {value.modality.replace(/-/g, ' ')}
-                                    </Text>
-                                }
-
-                                {value?.modality === 'repetition-based' && value?.calculated_sets.length === 0 &&
-                                    <PolygonButtonCustom
-                                        text='Let’s calculate this'
-                                        style={{
-                                            width: '80%',
-                                            marginTop: 16
-                                        }}
-                                        onPress={() => openCalculateModal(value ?? null)}
-                                    />
-                                }
+                                    {value?.modality === 'repetition-based' && value?.calculated_sets.length === 0 &&
+                                        <PolygonButtonCustom
+                                            text='Let’s calculate this'
+                                            style={{
+                                                width: '80%',
+                                                marginTop: 16
+                                            }}
+                                            onPress={() => openCalculateModal(value ?? null)}
+                                        />
+                                    }
+                                </View>
                             </TouchableOpacity>
                         )}
                     </View>
@@ -1047,6 +1087,8 @@ const ExercisesPage = ({
                         style={{
                             padding: 16,
                             backgroundColor: '#242424',
+                            justifyContent: 'space-between',
+                            flexDirection: 'row-reverse',
                             marginBottom: 16
                         }}
                         activeOpacity={0.8}
@@ -1054,10 +1096,59 @@ const ExercisesPage = ({
                             router.push(`/workout/${id}?page_type=exercise&exercise_id=${value?.id}`);
                         }}
                     >
-                        <View style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between'
-                        }}>
+                        <View
+                            style={{
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                width: '10%'
+                            }}
+                        >
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={[styles.buttonImageContainer, { marginBottom: 19 }]}
+                            >
+                                <Image
+                                    source={require('@/assets/images/arrows-icon.png')}
+                                    style={{ width: 18, height: 18 }}
+                                />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={[styles.buttonImageContainer, { marginBottom: 19 }]}
+                                disabled={value?.modality === 'repetition-based' && value?.calculated_sets.length === 0}
+                                onPress={() => openCalculateModal(value ?? null)}
+                            >
+                                <Image
+                                    source={require('@/assets/images/mathematical-icon.png')}
+                                    style={{ width: 16, height: 16 }}
+                                />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={styles.buttonImageContainer}
+                            >
+                                <Text
+                                    fontFamily={'CeraCY-Regular'}
+                                    style={{
+                                        color: '#FFFFFF',
+                                        fontSize: 12,
+                                        lineHeight: 12
+                                    }}
+                                >
+                                    RPE
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View
+                            style={{
+                                width: '85%',
+                                marginHorizontal: 16
+                            }}
+                        >
                             <TextBold
                                 ellipsizeMode='tail'
                                 numberOfLines={1}
@@ -1066,141 +1157,121 @@ const ExercisesPage = ({
                                 {value?.name}
                             </TextBold>
 
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={styles.buttonImageContainer}
-                            >
-                                <Image
-                                    source={require('@/assets/images/dots.png')}
-                                    style={{ width: 3, height: 15 }}
-                                />
-                            </TouchableOpacity>
-                        </View>
-
-                        {value?.lower_intensity &&
-                            <View
-                                style={{
-                                    backgroundColor: '#404518',
-                                    paddingHorizontal: 8,
-                                    paddingVertical: 4,
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    gap: 6,
-                                    marginBottom: 8,
-                                    alignSelf: 'flex-start'
-                                }}
-                            >
-                                <Image
-                                    source={require('@/assets/images/lower-intensity-icon.png')}
-                                    style={{ width: 12, height: 12 }}
-                                />
-
-                                <Text
-                                    ellipsizeMode='tail'
-                                    numberOfLines={1}
-                                    fontFamily={'CeraCY-Regular'}
+                            {value?.lower_intensity &&
+                                <View
                                     style={{
-                                        fontSize: 16,
-                                        lineHeight: 16,
-                                        color: '#FFFFFF'
+                                        backgroundColor: '#404518',
+                                        paddingHorizontal: 8,
+                                        paddingVertical: 4,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        gap: 6,
+                                        marginBottom: 8,
+                                        alignSelf: 'flex-start'
                                     }}
-                                >
-                                    Lower intensity
-                                </Text>
-                            </View>
-                        }
-
-                        {value?.alternative_exercise &&
-                            <View
-                                style={{
-                                    backgroundColor: '#404518',
-                                    paddingHorizontal: 8,
-                                    paddingVertical: 4,
-                                    flexDirection: 'row',
-                                    gap: 6,
-                                    alignItems: 'center',
-                                    marginBottom: 8,
-                                    alignSelf: 'flex-start'
-                                }}
-                            >
-                                <Image
-                                    source={require('@/assets/images/arrows-icon.png')}
-                                    style={{ width: 12, height: 12 }}
-                                />
-
-                                <Text
-                                    ellipsizeMode='tail'
-                                    numberOfLines={1}
-                                    fontFamily={'CeraCY-Regular'}
-                                    style={{
-                                        fontSize: 16,
-                                        lineHeight: 16,
-                                        color: '#FFFFFF'
-                                    }}
-                                >
-                                    Alternative
-                                </Text>
-                            </View>
-                        }
-
-                        {value?.modality === 'repetition-based' &&
-                            <View style={styles.cardContainer}>
-                                <View>
-                                    <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Sets</Text>
-                                    <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                        {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets.length}
-                                    </Text>
-                                </View>
-
-                                <View>
-                                    <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Reps</Text>
-                                    <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                        {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets[0]?.reps ?? '?'}
-                                    </Text>
-                                </View>
-
-                                <View>
-                                    <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Weight</Text>
-                                    <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                        {value?.calculated_sets.length === 0 ? '?' : `${value?.calculated_sets[0]?.weight} KG` || '?'}
-                                    </Text>
-                                </View>
-
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={styles.buttonImageContainer}
                                 >
                                     <Image
-                                        source={require('@/assets/images/line-dots.png')}
-                                        style={{ width: 18, height: 15 }}
+                                        source={require('@/assets/images/lower-intensity-icon.png')}
+                                        style={{ width: 12, height: 12 }}
                                     />
-                                </TouchableOpacity>
-                            </View>
-                        }
 
-                        {value?.modality && value?.modality !== 'repetition-based' &&
-                            <Text
-                                fontFamily='CeraCY-Regular'
-                                style={{
-                                    color: '#FFFFFF',
-                                    marginTop: 16,
-                                    textTransform: 'uppercase'
-                                }}
-                            >
-                                {value.modality.replace(/-/g, ' ')}
-                            </Text>
-                        }
+                                    <Text
+                                        ellipsizeMode='tail'
+                                        numberOfLines={1}
+                                        fontFamily={'CeraCY-Regular'}
+                                        style={{
+                                            fontSize: 16,
+                                            lineHeight: 16,
+                                            color: '#FFFFFF'
+                                        }}
+                                    >
+                                        Lower intensity
+                                    </Text>
+                                </View>
+                            }
 
-                        {value?.modality === 'repetition-based' && value?.calculated_sets.length === 0 &&
-                            <PolygonButtonCustom
-                                text='Let’s calculate this'
-                                style={{
-                                    width: '80%',
-                                    marginTop: 16
-                                }}
-                                onPress={() => openCalculateModal(value ?? null)}
-                            />
-                        }
+                            {value?.alternative_exercise &&
+                                <View
+                                    style={{
+                                        backgroundColor: '#404518',
+                                        paddingHorizontal: 8,
+                                        paddingVertical: 4,
+                                        flexDirection: 'row',
+                                        gap: 6,
+                                        alignItems: 'center',
+                                        marginBottom: 8,
+                                        alignSelf: 'flex-start'
+                                    }}
+                                >
+                                    <Image
+                                        source={require('@/assets/images/arrows-icon.png')}
+                                        style={{ width: 12, height: 12 }}
+                                    />
+
+                                    <Text
+                                        ellipsizeMode='tail'
+                                        numberOfLines={1}
+                                        fontFamily={'CeraCY-Regular'}
+                                        style={{
+                                            fontSize: 16,
+                                            lineHeight: 16,
+                                            color: '#FFFFFF'
+                                        }}
+                                    >
+                                        Alternative
+                                    </Text>
+                                </View>
+                            }
+
+                            {value?.modality === 'repetition-based' &&
+                                <View style={styles.cardContainer}>
+                                    <View>
+                                        <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Sets</Text>
+                                        <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
+                                            {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets.length}
+                                        </Text>
+                                    </View>
+
+                                    <View>
+                                        <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Reps</Text>
+                                        <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
+                                            {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets[0]?.reps ?? '?'}
+                                        </Text>
+                                    </View>
+
+                                    <View>
+                                        <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Weight</Text>
+                                        <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
+                                            {value?.calculated_sets.length === 0 ? '?' : `${value?.calculated_sets[0]?.weight} KG` || '?'}
+                                        </Text>
+                                    </View>
+                                </View>
+                            }
+
+                            {value?.modality && value?.modality !== 'repetition-based' &&
+                                <Text
+                                    fontFamily='CeraCY-Regular'
+                                    style={{
+                                        color: '#FFFFFF',
+                                        marginTop: 16,
+                                        textTransform: 'uppercase'
+                                    }}
+                                >
+                                    {value.modality.replace(/-/g, ' ')}
+                                </Text>
+                            }
+
+                            {value?.modality === 'repetition-based' && value?.calculated_sets.length === 0 &&
+                                <PolygonButtonCustom
+                                    text='Let’s calculate this'
+                                    style={{
+                                        width: '80%',
+                                        marginTop: 16
+                                    }}
+                                    onPress={() => openCalculateModal(value ?? null)}
+                                />
+                            }
+                        </View>
                     </TouchableOpacity>
                 )}
 

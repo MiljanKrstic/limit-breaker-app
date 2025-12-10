@@ -888,10 +888,11 @@ const ExercisePage = ({
                                     activeOpacity={0.8}
                                     style={styles.buttonImageContainer}
                                 >
-                                    <Image
-                                        source={require('@/assets/images/line-dots.png')}
-                                        style={{ width: 18, height: 15 }}
-                                    />
+                                    {/*TODO::This is removed because no action provided from BE*/}
+                                    {/*<Image*/}
+                                    {/*    source={require('@/assets/images/line-dots.png')}*/}
+                                    {/*    style={{ width: 18, height: 15 }}*/}
+                                    {/*/>*/}
                                 </TouchableOpacity>
                             </View> :
                             <View>
@@ -903,7 +904,7 @@ const ExercisePage = ({
                                         <View>
                                             <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Sets</Text>
                                             <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                                {index += 1}
+                                                {index + 1}
                                             </Text>
                                         </View>
 
