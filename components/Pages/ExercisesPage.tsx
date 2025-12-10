@@ -606,6 +606,24 @@ const ExercisesPage = ({
         setLoading(false);
     };
 
+    const fetchAlternativeExercise = async (alternateExerciseId?: string) =>
+    {
+        setLoading(true);
+
+        if(!alternateExerciseId) {
+            setLoading(false);
+            return;
+        }
+
+        const response = await authorizedFetch('GET', `exercise/get?workout_id=${id}&exercise_id=${alternateExerciseId}`);
+
+        if(response.ok) {
+            await fetchData();
+        }
+
+        setLoading(false);
+    };
+
     const renderReportPain = () =>
     {
         switch (reportPainStep) {
@@ -953,6 +971,8 @@ const ExercisesPage = ({
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         style={[styles.buttonImageContainer, { marginBottom: 19 }]}
+                                        onPress={() => fetchAlternativeExercise(value?.id)}
+                                        disabled={!value?.alternative_exercise}
                                     >
                                         <Image
                                             source={require('@/assets/images/arrows-icon.png')}
@@ -1055,7 +1075,7 @@ const ExercisesPage = ({
                                         <PolygonButtonCustom
                                             text='Let’s calculate this'
                                             style={{
-                                                width: '80%',
+                                                minWidth: 300,
                                                 marginTop: 16
                                             }}
                                             onPress={() => openCalculateModal(value ?? null)}
@@ -1107,6 +1127,8 @@ const ExercisesPage = ({
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 style={[styles.buttonImageContainer, { marginBottom: 19 }]}
+                                onPress={() => fetchAlternativeExercise(value?.id)}
+                                disabled={!value?.alternative_exercise}
                             >
                                 <Image
                                     source={require('@/assets/images/arrows-icon.png')}
