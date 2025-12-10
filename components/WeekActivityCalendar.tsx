@@ -102,7 +102,7 @@ const WeekActivityCalendar = () =>
                     <ScrollView>
                         {completedWorkouts?.map((completedWorkout: any, index: number) =>
                             <Text
-                                key={completedWorkout?.id}
+                                key={index}
                                 style={{
                                     color: '#FFFFFF',
                                     fontSize: 16,
