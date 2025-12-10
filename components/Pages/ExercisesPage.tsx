@@ -623,7 +623,11 @@ const ExercisesPage = ({
             return;
         }
 
+        console.log(workoutId, exerciseId);
+
         const response = await authorizedFetch('GET', `exercise/get?workout_id=${workoutId}&exercise_id=${exerciseId}`);
+
+        console.log(response);
 
         if(response.ok) {
             await fetchData();
@@ -1116,7 +1120,6 @@ const ExercisesPage = ({
                                         <PolygonButtonCustom
                                             text='Let’s calculate this'
                                             style={{
-                                                minWidth: 300,
                                                 marginTop: 16
                                             }}
                                             onPress={() => openCalculateModal(value ?? null)}
