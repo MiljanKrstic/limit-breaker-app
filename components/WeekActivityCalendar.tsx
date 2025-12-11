@@ -74,6 +74,18 @@ const WeekActivityCalendar = () =>
         return weekDays[dayIndex];
     };
 
+    const isToday = (dateString: string) =>
+    {
+        const date = new Date(dateString);
+        const today = new Date();
+
+        return (
+            date.getFullYear() === today.getFullYear() &&
+            date.getMonth() === today.getMonth() &&
+            date.getDate() === today.getDate()
+        );
+    };
+
     return (
         <View>
             <MainModal
@@ -237,43 +249,20 @@ const WeekActivityCalendar = () =>
                             This Week
                         </TextBold>
 
-                        <TextBold style={currentWeekCount > 0 ? styles.weekText : styles.weekTextRed}>
+                        <TextBold style={styles.weekText}>
                             {currentWeekCount}/7
                         </TextBold>
                     </View>
-
-                    {currentWeekCount === 0 &&
-                        <View style={styles.noActivityContainer}>
-                            <View style={styles.noActivityContainerInner}>
-                                <Text style={styles.noActivityText}>
-                                    Any physical activity?
-                                </Text>
-
-                                <Image
-                                    source={require('@/assets/images/info-tooltip.png')}
-                                    style={{ width: 18, height: 18 }}
-                                />
-                            </View>
-
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={{
-                                    width: '20%'
-                                }}
-                            >
-                                <Text style={styles.noActivityEnterText}>
-                                    Enter
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    }
 
                     {currentWeekCount > 0 ?
                         <>
                             {currentWeek?.days.map((weekDay: any, index: number) =>
                                 <View
                                     key={index}
-                                    style={styles.weekDayContainer}
+                                    style={[
+                                        styles.weekDayContainer,
+                                        isToday(weekDay?.date) && { backgroundColor: '#656C26' }
+                                    ]}
                                 >
                                     {weekDay.has_completed_workout &&
                                         <Image
