@@ -625,10 +625,19 @@ const ExercisesPage = ({
 
         const response = await authorizedFetch('GET', `exercise/get?workout_id=${workoutId}&exercise_id=${exerciseId}`);
 
-        console.log(response);
-
         if(response.ok) {
+            setExercise((prev: any) => {
+                const index = prev.exercises.findIndex((exercise: any) => exercise.id === exerciseId);
+                if (index === -1) return prev;
 
+                const updatedExercises = [...prev.exercises];
+                updatedExercises[index] = response.body.exercise;
+
+                return {
+                    ...prev,
+                    exercises: updatedExercises
+                };
+            });
         }
 
         setLoading(false);
