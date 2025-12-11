@@ -62,7 +62,7 @@ const ExercisePage = ({
 
     useEffect(() => {
         fetchData().then();
-    }, [id]);
+    }, []);
 
     const openCalculateModal = (exercise: any | null) =>
     {
