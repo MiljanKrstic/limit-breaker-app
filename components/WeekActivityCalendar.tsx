@@ -11,12 +11,14 @@ import useAuthorizedFetch from '@/hooks/useAuthorizedFetch';
 import { Image } from 'expo-image';
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'expo-router';
 
 type Day = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
 
 const WeekActivityCalendar = () =>
 {
+    const router = useRouter();
     const authorizedFetch = useAuthorizedFetch();
     const { getUserData } = asyncStorage();
 
@@ -62,8 +64,7 @@ const WeekActivityCalendar = () =>
         if(response.ok) {
             setSelectedReason(null);
             setMissingActivityModalVisible(false);
-
-            console.log(response);
+            router.navigate('/(tabs)');
         }
 
         setLoading(false);
