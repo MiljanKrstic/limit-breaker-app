@@ -30,6 +30,7 @@ const Account = () =>
             await removeBearerToken();
             await removeUserData();
 
+            router.dismissAll();
             router.navigate('/(auth)/login');
         }
 
