@@ -623,14 +623,12 @@ const ExercisesPage = ({
             return;
         }
 
-        console.log(workoutId, exerciseId);
-
         const response = await authorizedFetch('GET', `exercise/get?workout_id=${workoutId}&exercise_id=${exerciseId}`);
 
         console.log(response);
 
         if(response.ok) {
-            await fetchData();
+
         }
 
         setLoading(false);
@@ -1009,49 +1007,53 @@ const ExercisesPage = ({
                                         width: '10%'
                                     }}
                                 >
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        style={[styles.buttonImageContainer, { marginBottom: 19 }]}
-                                        onPress={() => fetchAlternativeExercise(rehab?.workout_id, value?.id)}
-                                        disabled={!value?.alternative_exercise}
-                                    >
-                                        <Image
-                                            source={require('@/assets/images/arrows-icon.png')}
-                                            style={{ width: 18, height: 18 }}
-                                        />
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        style={[styles.buttonImageContainer, { marginBottom: 19 }]}
-                                        disabled={value?.modality === 'repetition-based' && value?.calculated_sets.length === 0}
-                                        onPress={() => openCalculateModal(value ?? null)}
-                                    >
-                                        <Image
-                                            source={require('@/assets/images/mathematical-icon.png')}
-                                            style={{ width: 16, height: 16 }}
-                                        />
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        style={styles.buttonImageContainer}
-                                        onPress={() => {
-                                            setSingleExerciseModalInfo(value);
-                                            setIsSingleExerciseModalOpen(true);
-                                        }}
-                                    >
-                                        <Text
-                                            fontFamily={'CeraCY-Regular'}
-                                            style={{
-                                                color: '#FFFFFF',
-                                                fontSize: 12,
-                                                lineHeight: 12
-                                            }}
+                                    {value?.alternative_exercise &&
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={[styles.buttonImageContainer, { marginBottom: 19 }]}
+                                            onPress={() => fetchAlternativeExercise(rehab?.workout_id, value?.id)}
                                         >
-                                            RPE
-                                        </Text>
-                                    </TouchableOpacity>
+                                            <Image
+                                                source={require('@/assets/images/arrows-icon.png')}
+                                                style={{ width: 18, height: 18 }}
+                                            />
+                                        </TouchableOpacity>
+                                    }
+
+                                    {value?.modality === 'repetition-based' && value?.calculated_sets.length > 0 &&
+                                        <>
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                style={[styles.buttonImageContainer, { marginBottom: 19 }]}
+                                                onPress={() => openCalculateModal(value ?? null)}
+                                            >
+                                                <Image
+                                                    source={require('@/assets/images/mathematical-icon.png')}
+                                                    style={{ width: 16, height: 16 }}
+                                                />
+                                            </TouchableOpacity>
+
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                style={styles.buttonImageContainer}
+                                                onPress={() => {
+                                                    setSingleExerciseModalInfo(value);
+                                                    setIsSingleExerciseModalOpen(true);
+                                                }}
+                                            >
+                                                <Text
+                                                    fontFamily={'CeraCY-Regular'}
+                                                    style={{
+                                                        color: '#FFFFFF',
+                                                        fontSize: 12,
+                                                        lineHeight: 12
+                                                    }}
+                                                >
+                                                    RPE
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </>
+                                    }
                                 </View>
 
                                 <View
@@ -1161,56 +1163,64 @@ const ExercisesPage = ({
                         }}
                     >
                         <View
-                            style={{
-                                flexDirection: 'column',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                width: '10%'
-                            }}
+                            style={[
+                                {
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    width: '10%'
+                                },
+                                value?.alternative_exercise && value?.modality === 'repetition-based' && value?.calculated_sets.length > 0 && {
+                                    justifyContent: 'space-between'
+                                }
+                            ]}
                         >
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={[styles.buttonImageContainer, { marginBottom: 19 }]}
-                                onPress={() => fetchAlternativeExercise(id, value?.id)}
-                                disabled={!value?.alternative_exercise}
-                            >
-                                <Image
-                                    source={require('@/assets/images/arrows-icon.png')}
-                                    style={{ width: 18, height: 18 }}
-                                />
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={[styles.buttonImageContainer, { marginBottom: 19 }]}
-                                disabled={value?.modality === 'repetition-based' && value?.calculated_sets.length === 0}
-                                onPress={() => openCalculateModal(value ?? null)}
-                            >
-                                <Image
-                                    source={require('@/assets/images/mathematical-icon.png')}
-                                    style={{ width: 16, height: 16 }}
-                                />
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={styles.buttonImageContainer}
-                                onPress={() => {
-                                    setSingleExerciseModalInfo(value);
-                                    setIsSingleExerciseModalOpen(true);
-                                }}
-                            >
-                                <Text
-                                    fontFamily={'CeraCY-Regular'}
-                                    style={{
-                                        color: '#FFFFFF',
-                                        fontSize: 12,
-                                        lineHeight: 12
-                                    }}
+                            {value?.alternative_exercise &&
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={[styles.buttonImageContainer, { marginBottom: 19 }]}
+                                    onPress={() => fetchAlternativeExercise(id, value?.id)}
                                 >
-                                    RPE
-                                </Text>
-                            </TouchableOpacity>
+                                    <Image
+                                        source={require('@/assets/images/arrows-icon.png')}
+                                        style={{ width: 18, height: 18 }}
+                                    />
+                                </TouchableOpacity>
+                            }
+
+                            {value?.modality === 'repetition-based' && value?.calculated_sets.length > 0 &&
+                                <>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={[styles.buttonImageContainer, { marginBottom: 19 }]}
+                                        onPress={() => openCalculateModal(value ?? null)}
+                                    >
+                                        <Image
+                                            source={require('@/assets/images/mathematical-icon.png')}
+                                            style={{ width: 16, height: 16 }}
+                                        />
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={styles.buttonImageContainer}
+                                        onPress={() => {
+                                            setSingleExerciseModalInfo(value);
+                                            setIsSingleExerciseModalOpen(true);
+                                        }}
+                                    >
+                                        <Text
+                                            fontFamily={'CeraCY-Regular'}
+                                            style={{
+                                                color: '#FFFFFF',
+                                                fontSize: 12,
+                                                lineHeight: 12
+                                            }}
+                                        >
+                                            RPE
+                                        </Text>
+                                    </TouchableOpacity>
+                                </>
+                            }
                         </View>
 
                         <View
@@ -1335,7 +1345,7 @@ const ExercisesPage = ({
                                 <PolygonButtonCustom
                                     text='Let’s calculate this'
                                     style={{
-                                        width: '80%',
+                                        width: '100%',
                                         marginTop: 16
                                     }}
                                     onPress={() => openCalculateModal(value ?? null)}
