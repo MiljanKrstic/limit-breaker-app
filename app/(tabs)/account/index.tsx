@@ -3,11 +3,42 @@ import Input from '@/components/Input';
 import PasswordInput from '@/components/PasswordInput';
 import AppLayout from '@/components/Layouts/AppLayout';
 import PolygonButtonCustom from '@/components/PolygonButtonCustom';
+import Loader from '@/components/Loader';
 
-import { View} from 'react-native';
+import useAuthorizedFetch from '@/hooks/useAuthorizedFetch';
+import asyncStorage from '@/lib/asyncStorage';
+
+import { View } from 'react-native';
+import { useState } from 'react';
+import { useRouter } from 'expo-router';
 
 const Account = () =>
 {
+    const authorizedFetch = useAuthorizedFetch();
+    const router = useRouter();
+
+    const [loading, setIsLoading] = useState<boolean>(false);
+
+    const logout = async () =>
+    {
+        setIsLoading(true);
+
+        const response = await authorizedFetch('POST', 'logout');
+
+        if(response.ok) {
+            const { removeBearerToken, removeUserData } = asyncStorage();
+            await removeBearerToken();
+            await removeUserData();
+
+            router.navigate('/(auth)/login');
+        }
+
+        setIsLoading(false);
+    };
+
+    if(loading)
+        return <Loader />;
+
     return (
         <AppLayout keyboardAvoidingView={true}>
             <TextBold
@@ -126,6 +157,14 @@ const Account = () =>
                 <PolygonButtonCustom
                     text='Submit'
                     onPress={() => {}}
+                    style={{
+                        marginBottom: 24
+                    }}
+                />
+
+                <PolygonButtonCustom
+                    text='Log out'
+                    onPress={() => logout()}
                     style={{
                         marginBottom: 24
                     }}

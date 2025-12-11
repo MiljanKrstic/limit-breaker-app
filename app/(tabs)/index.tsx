@@ -69,8 +69,6 @@ const Index = () =>
             setCategories(() => fetchedCategories);
             setAllCategoryWorkouts(fetchedCategories);
         }
-
-        console.log(missingActivityResponse)
         if(missingActivityResponse.ok) {
             setMissingActivityExercise(() => missingActivityResponse.body?.workout ?? null);
         }
