@@ -1,10 +1,15 @@
 import Text from '@/components/Text';
 import TextBold from '@/components/TextBold';
 import MainModal from '@/components/MainModal';
+import PolygonButtonCustom from '@/components/PolygonButtonCustom';
+import RadioButton from '@/components/RadioButton';
+import Loader from '@/components/Loader';
+
+import asyncStorage from '@/lib/asyncStorage';
 import useAuthorizedFetch from '@/hooks/useAuthorizedFetch';
 
 import { Image } from 'expo-image';
-import {View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 
 import React, { useEffect, useState } from 'react';
 
@@ -13,7 +18,9 @@ type Day = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
 const WeekActivityCalendar = () =>
 {
     const authorizedFetch = useAuthorizedFetch();
+    const { getUserData } = asyncStorage();
 
+    const [loading, setLoading] = useState<boolean>(false);
     const [currentWeek, setCurrentWeek] = useState<any>(null);
     const [previousWeek, setPreviousWeek] = useState<any>(null);
 
@@ -24,6 +31,43 @@ const WeekActivityCalendar = () =>
     const [completedWorkouts, setCompletedWorkouts] = useState<any[]>([]);
 
     const [missingActivityModalVisible, setMissingActivityModalVisible] = useState<boolean>(false);
+    const [missingActivityData, setMissingActivityData] = useState<any[]>([]);
+    const [selectedReason, setSelectedReason] = useState<number | null>(null);
+
+    const fetchMissingActivity = async () =>
+    {
+        const response = await authorizedFetch('GET', `missing-activity-reasons`);
+
+        if(response.ok) {
+            setMissingActivityData(response?.body?.data);
+            setMissingActivityModalVisible(true);
+        }
+    };
+
+    const saveMissingActivity = async () =>
+    {
+        setLoading(true);
+
+        const user = await getUserData();
+        if(!user) {
+            setLoading(false);
+            return;
+        }
+
+        const response = await authorizedFetch('POST', `user-missing-activity`, {
+            user_id: 16,
+            missing_activity_reason_id: selectedReason
+        });
+
+        if(response.ok) {
+            setSelectedReason(null);
+            setMissingActivityModalVisible(false);
+
+            console.log(response);
+        }
+
+        setLoading(false);
+    };
 
     const countCompletedWorkouts = (week: any) =>
     {
@@ -88,6 +132,19 @@ const WeekActivityCalendar = () =>
         );
     };
 
+    const todayDate = () =>
+    {
+        const today = new Date();
+
+        return today.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit'
+        });
+    };
+
+    if(loading)
+        return <Loader />;
+
     return (
         <View>
             <MainModal
@@ -138,11 +195,191 @@ const WeekActivityCalendar = () =>
 
             <MainModal
                 modalVisible={missingActivityModalVisible}
-                setModalVisible={() => setMissingActivityModalVisible(false)}
+                setModalVisible={() => {
+                    setSelectedReason(null);
+                    setMissingActivityModalVisible(false);
+                }}
             >
-                <Text style={{ color: '#FFFFFF' }}>
-                    yey
-                </Text>
+                <View>
+                    <View>
+                        <TextBold
+                            style={{
+                                color: '#FFFFFF',
+                                fontSize: 26,
+                                lineHeight: 26,
+                                textAlign: 'center',
+                                marginBottom: 30
+                            }}
+                        >
+                            Activity missing
+                        </TextBold>
+
+                        <View
+                            style={{
+                                paddingHorizontal: 14,
+                                paddingVertical: 16,
+                                backgroundColor: '#242424',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                marginBottom: 56
+                            }}
+                        >
+                            <View
+                                style={{
+                                    width: '25%'
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: '#FFFFFF',
+                                        fontSize: 16,
+                                        lineHeight: 16,
+                                        marginBottom: 16,
+                                        opacity: 0.5,
+                                        textAlign: 'center'
+                                    }}
+                                    fontFamily={'CeraCY-Regular'}
+                                >
+                                    Last seen
+                                </Text>
+
+                                <Text
+                                    style={{
+                                        color: '#FFFFFF',
+                                        fontSize: 16,
+                                        lineHeight: 16,
+                                        marginBottom: 16,
+                                        textAlign: 'center'
+                                    }}
+                                >
+                                    {missingActivityData?.last_seen ?? '_'}
+                                </Text>
+                            </View>
+
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: '50%'
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: '#FF9898',
+                                        borderStyle: 'dashed',
+                                        width: '30%',
+                                        position: 'relative',
+                                        top: '-12%',
+                                        left: '-8%'
+                                    }}
+                                >
+                                </View>
+                                <Text
+                                    style={{
+                                        color: '#FF9898',
+                                        fontSize: 16,
+                                        lineHeight: 16,
+                                        marginBottom: 16,
+                                        textAlign: 'center'
+                                    }}
+                                >
+                                    ?
+                                </Text>
+                                <View
+                                    style={{
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: '#FF9898',
+                                        borderStyle: 'dashed',
+                                        width: '30%',
+                                        position: 'relative',
+                                        top: '-12%',
+                                        left: '8%'
+                                    }}
+                                >
+                                </View>
+                            </View>
+
+                            <View
+                                style={{
+                                    width: '25%'
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: '#FFFFFF',
+                                        fontSize: 16,
+                                        lineHeight: 16,
+                                        marginBottom: 16,
+                                        opacity: 0.5,
+                                        textAlign: 'center'
+                                    }}
+                                    fontFamily={'CeraCY-Regular'}
+                                >
+                                    Today
+                                </Text>
+
+                                <Text
+                                    style={{
+                                        color: '#FFFFFF',
+                                        fontSize: 16,
+                                        lineHeight: 16,
+                                        marginBottom: 16,
+                                        textAlign: 'center'
+                                    }}
+                                >
+                                    {todayDate()}
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View>
+                        <Text
+                            style={{
+                                color: '#FFFFFF',
+                                fontSize: 16,
+                                lineHeight: 16,
+                                marginBottom: 16
+                            }}
+                        >
+                            Choose one
+                        </Text>
+
+                        <ScrollView
+                            style={{
+                                maxHeight: 300
+                            }}
+                        >
+                            {missingActivityData?.map((data: any) =>
+                                <RadioButton
+                                    key={data?.id}
+                                    text={data?.title}
+                                    isSelected={selectedReason === data?.id}
+                                    onPress={() => setSelectedReason(data?.id)}
+                                />
+                            )}
+                        </ScrollView>
+
+                        {selectedReason &&
+                            <View
+                                style={{
+                                    width: '100%',
+                                    alignItems: 'center',
+                                    marginTop: 30
+                                }}
+                            >
+                                <PolygonButtonCustom
+                                    text='Submit'
+                                    style={{ maxWidth: 120 }}
+                                    onPress={() => saveMissingActivity()}
+                                />
+                            </View>
+                        }
+                    </View>
+                </View>
             </MainModal>
 
             <View style={styles.seeHistoryContainer}>
@@ -187,7 +424,7 @@ const WeekActivityCalendar = () =>
                                 style={{
                                     width: '20%'
                                 }}
-                                onPress={() => setMissingActivityModalVisible(true)}
+                                onPress={async () => await fetchMissingActivity()}
                             >
                                 <Text style={styles.noActivityEnterText}>
                                     Enter

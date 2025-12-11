@@ -23,6 +23,7 @@ const Index = () =>
     const [loading, setIsLoading] = useState<boolean>(false);
     const [dailyFitness, setDailyFitness] = useState<any>(null);
     const [dailyCrossFit, setDailyCrossFit] = useState<any>(null);
+    const [missingActivityExercise, setMissingActivityExercise] = useState<any>(null);
     const [categories, setCategories] = useState<any[]>([]);
     const [categoryWorkouts, setCategoryWorkouts] = useState<any[]>([]);
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
@@ -50,11 +51,13 @@ const Index = () =>
         const [
             dailyFitnessResponse,
             dailyCrossfitResponse,
-            categoriesResponse
+            categoriesResponse,
+            missingActivityResponse
         ] = await Promise.all([
             authorizedFetch('GET', 'workouts/ultimate-daily-fitness'),
             authorizedFetch('GET', 'workouts/ultimate-daily-cross-fit'),
             authorizedFetch('GET', 'categories'),
+            authorizedFetch('GET', 'workouts/missing-activity-workout')
         ]);
 
         setIsLoading(() => false);
@@ -65,6 +68,11 @@ const Index = () =>
             const fetchedCategories = categoriesResponse.body?.categories ?? [];
             setCategories(() => fetchedCategories);
             setAllCategoryWorkouts(fetchedCategories);
+        }
+
+        console.log(missingActivityResponse)
+        if(missingActivityResponse.ok) {
+            setMissingActivityExercise(() => missingActivityResponse.body?.workout ?? null);
         }
     };
 
@@ -147,6 +155,24 @@ const Index = () =>
                     />
                 )}
             </View>
+
+            {missingActivityExercise &&
+                <View style={{ marginBottom: 48 }}>
+                    <View style={styles.textContainer}>
+                        <TextBold style={styles.textBoldInner}>
+                            Comeback
+                        </TextBold>
+                    </View>
+
+                    <MainCard
+                        name={missingActivityExercise?.name}
+                        description={missingActivityExercise?.description}
+                        onPress={() => {
+                            router.push(`/workout/${missingActivityExercise?.id}?page_type=exercises`);
+                        }}
+                    />
+                </View>
+            }
 
             <View style={{ marginBottom: 28 }}>
                 <TextBold style={styles.textBoldMain}>
