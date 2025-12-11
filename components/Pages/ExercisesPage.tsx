@@ -1443,42 +1443,43 @@ const ExercisesPage = ({
                             </View>
 
                             <View>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={{
-                                        flexDirection: 'row',
-                                        gap: 8,
-                                        justifyContent: 'center'
-                                    }}
-                                    onPress={() => closeModal()}
-                                >
-                                    <Image
-                                        source={require('@/assets/images/hourglass-icon.png')}
-                                        style={{
-                                            width: 16,
-                                            height: 16
-                                        }}
-                                    />
-                                    <Text
-                                        style={{
-                                            color: '#FFFFFF',
-                                            fontSize: 16,
-                                            lineHeight: 16
-                                        }}
-                                    >
-                                        Remind Me Later
-                                    </Text>
-                                </TouchableOpacity>
-
-                                <Text
-                                    style={{
-                                        color: '#FFFFFF',
-                                        marginVertical: 16,
-                                        textAlign: 'center'
-                                    }}
-                                >
-                                    or
-                                </Text>
+                                {/*TODO::fix later*/}
+                                {/*<TouchableOpacity*/}
+                                {/*    activeOpacity={0.8}*/}
+                                {/*    style={{*/}
+                                {/*        flexDirection: 'row',*/}
+                                {/*        gap: 8,*/}
+                                {/*        justifyContent: 'center'*/}
+                                {/*    }}*/}
+                                {/*    onPress={() => closeModal()}*/}
+                                {/*>*/}
+                                {/*    <Image*/}
+                                {/*        source={require('@/assets/images/hourglass-icon.png')}*/}
+                                {/*        style={{*/}
+                                {/*            width: 16,*/}
+                                {/*            height: 16*/}
+                                {/*        }}*/}
+                                {/*    />*/}
+                                {/*    <Text*/}
+                                {/*        style={{*/}
+                                {/*            color: '#FFFFFF',*/}
+                                {/*            fontSize: 16,*/}
+                                {/*            lineHeight: 16*/}
+                                {/*        }}*/}
+                                {/*    >*/}
+                                {/*        Remind Me Later*/}
+                                {/*    </Text>*/}
+                                {/*</TouchableOpacity>*/}
+                                
+                                {/*<Text*/}
+                                {/*    style={{*/}
+                                {/*        color: '#FFFFFF',*/}
+                                {/*        marginVertical: 16,*/}
+                                {/*        textAlign: 'center'*/}
+                                {/*    }}*/}
+                                {/*>*/}
+                                {/*    or*/}
+                                {/*</Text>*/}
 
                                 <PolygonButtonCustom
                                     text='Next'
@@ -2279,42 +2280,43 @@ const ExercisesPage = ({
                             </View>
 
                             <View>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={{
-                                        flexDirection: 'row',
-                                        gap: 8,
-                                        justifyContent: 'center'
-                                    }}
-                                    onPress={() => closeModal()}
-                                >
-                                    <Image
-                                        source={require('@/assets/images/hourglass-icon.png')}
-                                        style={{
-                                            width: 16,
-                                            height: 16
-                                        }}
-                                    />
-                                    <Text
-                                        style={{
-                                            color: '#FFFFFF',
-                                            fontSize: 16,
-                                            lineHeight: 16
-                                        }}
-                                    >
-                                        Remind Me Later
-                                    </Text>
-                                </TouchableOpacity>
-
-                                <Text
-                                    style={{
-                                        color: '#FFFFFF',
-                                        marginVertical: 16,
-                                        textAlign: 'center'
-                                    }}
-                                >
-                                    or
-                                </Text>
+                                {/*TODO::fix later*/}
+                                {/*<TouchableOpacity*/}
+                                {/*    activeOpacity={0.8}*/}
+                                {/*    style={{*/}
+                                {/*        flexDirection: 'row',*/}
+                                {/*        gap: 8,*/}
+                                {/*        justifyContent: 'center'*/}
+                                {/*    }}*/}
+                                {/*    onPress={() => closeModal()}*/}
+                                {/*>*/}
+                                {/*    <Image*/}
+                                {/*        source={require('@/assets/images/hourglass-icon.png')}*/}
+                                {/*        style={{*/}
+                                {/*            width: 16,*/}
+                                {/*            height: 16*/}
+                                {/*        }}*/}
+                                {/*    />*/}
+                                {/*    <Text*/}
+                                {/*        style={{*/}
+                                {/*            color: '#FFFFFF',*/}
+                                {/*            fontSize: 16,*/}
+                                {/*            lineHeight: 16*/}
+                                {/*        }}*/}
+                                {/*    >*/}
+                                {/*        Remind Me Later*/}
+                                {/*    </Text>*/}
+                                {/*</TouchableOpacity>*/}
+                                
+                                {/*<Text*/}
+                                {/*    style={{*/}
+                                {/*        color: '#FFFFFF',*/}
+                                {/*        marginVertical: 16,*/}
+                                {/*        textAlign: 'center'*/}
+                                {/*    }}*/}
+                                {/*>*/}
+                                {/*    or*/}
+                                {/*</Text>*/}
 
                                 <PolygonButtonCustom
                                     text='Next'
@@ -2691,42 +2693,43 @@ const ExercisesPage = ({
                             </View>
 
                             <View>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={{
-                                        flexDirection: 'row',
-                                        gap: 8,
-                                        justifyContent: 'center'
-                                    }}
-                                    onPress={() => closeModal()}
-                                >
-                                    <Image
-                                        source={require('@/assets/images/hourglass-icon.png')}
-                                        style={{
-                                            width: 16,
-                                            height: 16
-                                        }}
-                                    />
-                                    <Text
-                                        style={{
-                                            color: '#FFFFFF',
-                                            fontSize: 16,
-                                            lineHeight: 16
-                                        }}
-                                    >
-                                        Remind Me Later
-                                    </Text>
-                                </TouchableOpacity>
-
-                                <Text
-                                    style={{
-                                        color: '#FFFFFF',
-                                        marginVertical: 16,
-                                        textAlign: 'center'
-                                    }}
-                                >
-                                    or
-                                </Text>
+                                {/*TODO::fix later*/}
+                                {/*<TouchableOpacity*/}
+                                {/*    activeOpacity={0.8}*/}
+                                {/*    style={{*/}
+                                {/*        flexDirection: 'row',*/}
+                                {/*        gap: 8,*/}
+                                {/*        justifyContent: 'center'*/}
+                                {/*    }}*/}
+                                {/*    onPress={() => closeModal()}*/}
+                                {/*>*/}
+                                {/*    <Image*/}
+                                {/*        source={require('@/assets/images/hourglass-icon.png')}*/}
+                                {/*        style={{*/}
+                                {/*            width: 16,*/}
+                                {/*            height: 16*/}
+                                {/*        }}*/}
+                                {/*    />*/}
+                                {/*    <Text*/}
+                                {/*        style={{*/}
+                                {/*            color: '#FFFFFF',*/}
+                                {/*            fontSize: 16,*/}
+                                {/*            lineHeight: 16*/}
+                                {/*        }}*/}
+                                {/*    >*/}
+                                {/*        Remind Me Later*/}
+                                {/*    </Text>*/}
+                                {/*</TouchableOpacity>*/}
+                                
+                                {/*<Text*/}
+                                {/*    style={{*/}
+                                {/*        color: '#FFFFFF',*/}
+                                {/*        marginVertical: 16,*/}
+                                {/*        textAlign: 'center'*/}
+                                {/*    }}*/}
+                                {/*>*/}
+                                {/*    or*/}
+                                {/*</Text>*/}
 
                                 <PolygonButtonCustom
                                     text='Next'

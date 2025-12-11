@@ -23,6 +23,8 @@ const WeekActivityCalendar = () =>
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [completedWorkouts, setCompletedWorkouts] = useState<any[]>([]);
 
+    const [missingActivityModalVisible, setMissingActivityModalVisible] = useState<boolean>(false);
+
     const countCompletedWorkouts = (week: any) =>
     {
         if (!week?.days) return 0;
@@ -134,6 +136,15 @@ const WeekActivityCalendar = () =>
                 </View>
             </MainModal>
 
+            <MainModal
+                modalVisible={missingActivityModalVisible}
+                setModalVisible={() => setMissingActivityModalVisible(false)}
+            >
+                <Text style={{ color: '#FFFFFF' }}>
+                    yey
+                </Text>
+            </MainModal>
+
             <View style={styles.seeHistoryContainer}>
                 <Text
                     fontFamily='CeraCY-Regular'
@@ -176,6 +187,7 @@ const WeekActivityCalendar = () =>
                                 style={{
                                     width: '20%'
                                 }}
+                                onPress={() => setMissingActivityModalVisible(true)}
                             >
                                 <Text style={styles.noActivityEnterText}>
                                     Enter
