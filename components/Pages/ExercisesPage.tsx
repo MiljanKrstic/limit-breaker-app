@@ -552,8 +552,9 @@ const ExercisesPage = ({
         );
 
         if(response.ok) {
-            router.push('/(tabs)');
             setLoading(false);
+            closeModal();
+            router.push('/(tabs)');
         }
 
         setLoading(false);
@@ -945,7 +946,7 @@ const ExercisesPage = ({
             </ImageBackground>
 
             <View style={{ paddingHorizontal: 24 }}>
-                {rehab &&
+                {rehab?.exercises?.length > 0 &&
                     <View
                         style={{
                             width: '100%',
@@ -1142,7 +1143,7 @@ const ExercisesPage = ({
                     </View>
                 }
 
-                {rehab &&
+                {rehab?.exercises?.length > 0 &&
                     <Text
                         style={{
                             color: '#FFFFFF',
