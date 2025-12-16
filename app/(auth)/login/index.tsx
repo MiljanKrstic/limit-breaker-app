@@ -35,6 +35,19 @@ const Login = () =>
         }
     });
 
+    const resetForm = () =>
+    {
+        setLoginForm({
+            email: '',
+            password: ''
+        });
+
+        setErrorForm({
+            email: { message: '', error: false },
+            password: { message: '', error: false }
+        });
+    };
+
     const router = useRouter();
 
     const loginUser = async () =>
@@ -95,6 +108,7 @@ const Login = () =>
         }
 
         setLoading(() => false);
+        resetForm();
         router.navigate('/(tabs)');
     };
 

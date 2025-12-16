@@ -54,6 +54,27 @@ const Register = () =>
 
     const toggleDatePicker = () => setShowDatePicker(() => !showDatePicker);
 
+    const resetForm = () =>
+    {
+        setRegisterForm({
+            name: '',
+            gender: 'male',
+            date_of_birth: new Date(),
+            email: '',
+            password: '',
+            password_confirmation: ''
+        });
+
+        setErrorForm({
+            name: { message: '', error: false },
+            email: { message: '', error: false },
+            password: { message: '', error: false },
+            password_confirmation: { message: '', error: false }
+        });
+
+        setShowDatePicker(false);
+    };
+
     const registerUser = async () =>
     {
         setLoading(() => true);
@@ -158,6 +179,7 @@ const Register = () =>
         }
 
         setLoading(() => false);
+        resetForm();
         router.navigate('/(tabs)');
     };
 
