@@ -35,7 +35,7 @@ const Account = () =>
             await removeUserData();
 
             router.dismissAll();
-            router.navigate('/(auth)/login');
+            router.replace('/(auth)/login');
         }
 
         setLoading(false);
@@ -223,38 +223,54 @@ const Account = () =>
                 Settings
             </TextBold>
 
-            <View>
-                <Picker
+            <View
+                style={{
+                    marginTop: 24
+                }}
+            >
+                <View
                     style={{
-                        fontSize: 16,
-                        fontFamily: 'ChakraPetch-Regular'
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#535353',
+                        marginBottom: 24
                     }}
-                    selectedValue={updateForm?.gender}
-                    onValueChange={value =>
-                        setUpdateForm(prev => ({
-                            ...prev,
-                            gender: value
-                        }))
-                    }
                 >
-                    <Picker.Item
+                    <Picker
+                        mode={'dropdown'}
+                        dropdownIconRippleColor={'#FFFFFF'}
                         style={{
                             fontSize: 16,
-                            fontFamily: 'ChakraPetch-Regular'
+                            fontFamily: 'ChakraPetch-Regular',
+                            backgroundColor: '#000000',
+                            color: '#FFFFFF',
                         }}
-                        label='Male'
-                        value='male'
-                    />
+                        selectedValue={updateForm?.gender}
+                        onValueChange={value =>
+                            setUpdateForm(prev => ({
+                                ...prev,
+                                gender: value
+                            }))
+                        }
+                    >
+                        <Picker.Item
+                            style={{
+                                fontSize: 16,
+                                fontFamily: 'ChakraPetch-Regular'
+                            }}
+                            label='Male'
+                            value='male'
+                        />
 
-                    <Picker.Item
-                        style={{
-                            fontSize: 16,
-                            fontFamily: 'ChakraPetch-Regular'
-                        }}
-                        label='Female'
-                        value='female'
-                    />
-                </Picker>
+                        <Picker.Item
+                            style={{
+                                fontSize: 16,
+                                fontFamily: 'ChakraPetch-Regular'
+                            }}
+                            label='Female'
+                            value='female'
+                        />
+                    </Picker>
+                </View>
 
                 <Input
                     style={{ marginBottom: 24 }}

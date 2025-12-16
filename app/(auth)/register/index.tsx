@@ -207,6 +207,7 @@ const Register = () =>
                         }}
                     >
                         <Picker
+                            mode={'dropdown'}
                             style={{
                                 fontSize: 16,
                                 fontFamily: 'ChakraPetch-Regular'
