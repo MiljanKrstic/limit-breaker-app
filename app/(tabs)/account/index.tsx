@@ -1,8 +1,10 @@
 import TextBold from '@/components/TextBold';
+import Text from '@/components/Text';
 import Input from '@/components/Input';
 import PasswordInput from '@/components/PasswordInput';
 import AppLayout from '@/components/Layouts/AppLayout';
 import PolygonButtonCustom from '@/components/PolygonButtonCustom';
+import MainModal from '@/components/MainModal';
 import Loader from '@/components/Loader';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -10,8 +12,8 @@ import useAuthorizedFetch from '@/hooks/useAuthorizedFetch';
 import asyncStorage from '@/lib/asyncStorage';
 
 import { View } from 'react-native';
-import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'expo-router';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
 
 const Account = () =>
@@ -22,6 +24,7 @@ const Account = () =>
     const router = useRouter();
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
 
     const logout = async () =>
     {
@@ -41,6 +44,39 @@ const Account = () =>
         setLoading(false);
     };
 
+    const [rehabData, setRehabData] = useState<any | null>(null);
+
+    const fetchRehab = async () =>
+    {
+        setLoading(true);
+
+        const response = await authorizedFetch('GET', 'user-injuries');
+
+        if(response.ok) {
+            const data = response.body.data;
+            if(!Array.isArray(data)) {
+                setRehabData(data);
+            } else {
+                setRehabData(null);
+            }
+        }
+
+        setLoading(false);
+    };
+
+    const exitRehab = async () =>
+    {
+        setLoading(true);
+
+        const response = await authorizedFetch('POST', 'user-injuries/exit');
+        if(response.ok) {
+            await fetchRehab();
+            setModalVisible(false);
+        }
+
+        setLoading(false);
+    };
+
     const [showDatePicker, setShowDatePicker] = useState(false);
 
     const [updateForm, setUpdateForm] = useState({
@@ -53,6 +89,23 @@ const Account = () =>
     });
 
     const hasLoadedRef = useRef(false);
+
+    useFocusEffect(
+        useCallback(() => {
+            let isActive = true;
+
+            const load = async () => {
+                if (!isActive) return;
+                await fetchRehab();
+            };
+
+            load().then();
+
+            return () => {
+                isActive = false;
+            };
+        }, [])
+    );
 
     useEffect(() => {
         if (hasLoadedRef.current) return;
@@ -222,6 +275,15 @@ const Account = () =>
             >
                 Settings
             </TextBold>
+
+
+            {rehabData &&
+                <PolygonButtonCustom
+                    text="Exit Rehab Mode"
+                    onPress={() => setModalVisible(true)}
+                    style={{ marginBottom: 24 }}
+                />
+            }
 
             <View
                 style={{
@@ -416,6 +478,66 @@ const Account = () =>
                     }}
                 />
             </View>
+
+            <MainModal
+                modalVisible={modalVisible}
+                setModalVisible={() => setModalVisible(false)}
+            >
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'space-between'
+                    }}
+                >
+                    <TextBold
+                        style={{
+                            color: '#FFFFFF',
+                            fontSize: 26,
+                            lineHeight: 26,
+                            textAlign: 'center',
+                            marginBottom: 30
+                        }}
+                    >
+                        Exit rehabilitation mode?
+                    </TextBold>
+
+                    <View>
+                        <Text
+                            style={{
+                                color: '#FFFFFF',
+                                fontSize: 16,
+                                lineHeight: 16,
+                                textAlign: 'center',
+                                marginBottom: 30
+                            }}
+                        >
+                            This will disable rehab workouts and restore normal training plans.
+                        </Text>
+                    </View>
+
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            gap: 16
+                        }}
+                    >
+                        <PolygonButtonCustom
+                            text="Cancel"
+                            onPress={() => setModalVisible(false)}
+                            style={{ width: '45%' }}
+                        />
+
+                        <PolygonButtonCustom
+                            text="Submit"
+                            onPress={() => exitRehab()}
+                            style={{ width: '45%' }}
+                        />
+                    </View>
+                </View>
+            </MainModal>
         </AppLayout>
     )
 };
