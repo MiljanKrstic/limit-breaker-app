@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode, useRef, useEffect } from 'react';
 
 import {
     StatusBar,
@@ -7,74 +7,83 @@ import {
     KeyboardAvoidingView,
     Platform,
     TouchableWithoutFeedback,
-    Keyboard
+    Keyboard,
+    NativeScrollEvent,
+    NativeSyntheticEvent
 } from 'react-native';
 
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../Header';
 
 interface AppLayoutProps {
-    children: ReactNode;
-    avoidGlobalPadding?: boolean;
-    keyboardAvoidingView?: boolean;
+    children: ReactNode
+    avoidGlobalPadding?: boolean
+    keyboardAvoidingView?: boolean
+    pageKey?: string
 }
+
+const scrollPositions = new Map<string, { x: number; y: number }>();
 
 const AppLayout = ({
     children,
     avoidGlobalPadding = false,
-    keyboardAvoidingView = false
-}: AppLayoutProps) =>
-{
+    keyboardAvoidingView = false,
+    pageKey
+}: AppLayoutProps) => {
+    const scrollViewRef = useRef<ScrollView>(null)
+
+    useEffect(() => {
+        if (pageKey) {
+            const pos = scrollPositions.get(pageKey)
+            if (pos && scrollViewRef.current) {
+                scrollViewRef.current.scrollTo({ x: pos.x, y: pos.y, animated: false })
+            }
+        }
+    }, [pageKey]);
+
+    const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) =>
+    {
+        if (!pageKey) return
+        const { contentOffset } = event.nativeEvent
+        scrollPositions.set(pageKey, { x: contentOffset.x, y: contentOffset.y })
+    };
+
+    const ScrollContent = (
+        <ScrollView
+            ref={scrollViewRef}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            stickyHeaderIndices={[0]}
+            onScroll={onScroll}
+            scrollEventThrottle={16}
+            keyboardShouldPersistTaps="handled"
+        >
+            <Header />
+            <View style={!avoidGlobalPadding ? { paddingHorizontal: 24 } : undefined}>
+                {children}
+            </View>
+        </ScrollView>
+    )
+
     return (
         <SafeAreaProvider>
-            <SafeAreaView
-                style={{
-                    flex: 1,
-                    position: 'relative',
-                    backgroundColor: '#000000'
-                }}
-            >
-                <StatusBar
-                    animated={true}
-                    barStyle={'light-content'}
-                />
-
-                {keyboardAvoidingView ?
+            <SafeAreaView style={{ flex: 1, position: 'relative', backgroundColor: '#000000' }}>
+                <StatusBar animated barStyle="light-content" />
+                {keyboardAvoidingView ? (
                     <KeyboardAvoidingView
                         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={{
-                            zIndex: 1
-                        }}
+                        style={{ flex: 1, zIndex: 1 }}
                     >
                         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                            <ScrollView
-                                showsVerticalScrollIndicator={false}
-                                showsHorizontalScrollIndicator={false}
-                                stickyHeaderIndices={[0]}
-                            >
-                                <Header />
-
-                                <View style={!avoidGlobalPadding && { paddingHorizontal: 24 }}>
-                                    {children}
-                                </View>
-                            </ScrollView>
+                            {ScrollContent}
                         </TouchableWithoutFeedback>
-                    </KeyboardAvoidingView> :
-                    <ScrollView
-                        showsVerticalScrollIndicator={false}
-                        showsHorizontalScrollIndicator={false}
-                        stickyHeaderIndices={[0]}
-                    >
-                        <Header />
-
-                        <View style={!avoidGlobalPadding && { paddingHorizontal: 24 }}>
-                            {children}
-                        </View>
-                    </ScrollView>
-                }
+                    </KeyboardAvoidingView>
+                ) : (
+                    ScrollContent
+                )}
             </SafeAreaView>
         </SafeAreaProvider>
     )
-};
+}
 
 export default AppLayout;

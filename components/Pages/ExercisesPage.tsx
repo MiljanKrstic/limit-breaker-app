@@ -1038,7 +1038,10 @@ const ExercisesPage = ({
         return <Loader />;
 
     return (
-        <AppLayout avoidGlobalPadding={true}>
+        <AppLayout
+            avoidGlobalPadding={true}
+            pageKey={'exercises_page'}
+        >
             <ImageBackground
                 style={styles.backgroundImageContainer}
                 resizeMode='cover'
