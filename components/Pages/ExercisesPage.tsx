@@ -467,7 +467,6 @@ const ExercisesPage = ({
                 ...prev,
                 fixed: true,
                 sets: selectedCalculateExercise?.modality_data?.sets?.toString(),
-                maxReps: selectedCalculateExercise?.modality_data?.reps?.toString(),
                 targetReps: selectedCalculateExercise?.modality_data?.reps?.toString(),
             }));
         }
@@ -2005,7 +2004,6 @@ const ExercisesPage = ({
                                     textWhite={true}
                                     style={{ marginBottom: 32 }}
                                     label='ENTER MAX REPS'
-                                    disabled={Boolean(selectedCalculateExercise?.modality_data?.sets && selectedCalculateExercise?.modality_data?.reps)}
                                     value={calculateForm.maxReps}
                                     onChange={value => {
                                         setCalculateForm(prev => ({
