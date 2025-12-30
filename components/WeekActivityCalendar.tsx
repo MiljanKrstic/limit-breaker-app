@@ -30,10 +30,10 @@ const WeekActivityCalendar = () =>
     const [previousWeekCount, setPreviousWeekCount] = useState<number>(0);
 
     const [modalVisible, setModalVisible] = useState<boolean>(false);
-    const [completedWorkouts, setCompletedWorkouts] = useState<any[]>([]);
+    const [completedWorkouts, setCompletedWorkouts] = useState<any>([]);
 
     const [missingActivityModalVisible, setMissingActivityModalVisible] = useState<boolean>(false);
-    const [missingActivityData, setMissingActivityData] = useState<any[]>([]);
+    const [missingActivityData, setMissingActivityData] = useState<any>([]);
     const [selectedReason, setSelectedReason] = useState<number | null>(null);
 
     const fetchMissingActivity = async () =>
@@ -254,7 +254,7 @@ const WeekActivityCalendar = () =>
                                         textAlign: 'center'
                                     }}
                                 >
-                                    {missingActivityData?.last_seen ?? '_'}
+                                    {missingActivityData.last_seen ?? '_'}
                                 </Text>
                             </View>
 

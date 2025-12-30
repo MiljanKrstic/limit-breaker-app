@@ -76,7 +76,7 @@ const ExercisesPage = ({
     const [rating, setRating] = useState<number>(0);
 
     const [calculateModalVisible, setCalculateModalVisible] = useState<boolean>(false);
-    const [selectedCalculateExercise, setCalculateExercise] = useState<any | null>(null);
+    const [selectedCalculateExercise, setCalculateExercise] = useState<any>(null);
 
     const [reportPainModalVisible, setReportPainModalVisible] = useState<boolean>(false);
 
@@ -84,8 +84,8 @@ const ExercisesPage = ({
     {
         if(!exercise) return;
 
+        setCalculateExercise(() => exercise);
         setCalculateModalVisible(true);
-        setCalculateExercise(exercise);
     };
 
     const closeCalculateModal = () =>
@@ -128,7 +128,8 @@ const ExercisesPage = ({
             sets: '',
             maxWeight: '',
             decreaseWeight: false,
-            failed: false
+            failed: false,
+            fixed: false
         });
 
         setErrorCalculateForm({
@@ -164,7 +165,8 @@ const ExercisesPage = ({
         sets: '',
         maxWeight: '',
         decreaseWeight: false,
-        failed: false
+        failed: false,
+        fixed: false
     });
     const [errorCalculateForm, setErrorCalculateForm] = useState({
         maxReps: {
@@ -457,6 +459,16 @@ const ExercisesPage = ({
             setCalculateFormBodyWeight(prev => ({
                 ...prev,
                 exercise_id: selectedCalculateExercise?.id
+            }));
+        }
+
+        if(selectedCalculateExercise?.modality_data?.sets && selectedCalculateExercise?.modality_data?.reps) {
+            setCalculateForm(prev => ({
+                ...prev,
+                fixed: true,
+                sets: selectedCalculateExercise?.modality_data?.sets?.toString(),
+                maxReps: selectedCalculateExercise?.modality_data?.reps?.toString(),
+                targetReps: selectedCalculateExercise?.modality_data?.reps?.toString(),
             }));
         }
     }, [selectedCalculateExercise]);
@@ -913,6 +925,115 @@ const ExercisesPage = ({
         }
     };
 
+    const renderModality = (modalityData: any) =>
+    {
+        switch (modalityData?.modality) {
+            case 'time-based':
+                return (
+                    <View>
+                        <Text
+                            style={{
+                                color: '#FFFFFF',
+                                textTransform: 'uppercase'
+                            }}
+                        >
+                            {modalityData?.modality.replace(/-/g, ' ')}
+                        </Text>
+
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                gap: 16
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    color: '#FFFFFF',
+                                    textTransform: 'uppercase'
+                                }}
+                            >
+                                sets: {modalityData?.sets}
+                            </Text>
+
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    gap: 3
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: '#FFFFFF',
+                                        textTransform: 'uppercase'
+                                    }}
+                                >
+                                    reps:
+                                </Text>
+
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        gap: 3,
+                                        width: '100%'
+                                    }}
+                                >
+                                    <Image
+                                        source={require('@/assets/images/time-icon.png')}
+                                        style={{ width: 16, height: 16 }}
+                                    />
+
+                                    <Text
+                                        style={{
+                                            color: '#FFFFFF',
+                                            textTransform: 'uppercase',
+                                            width: '100%'
+                                        }}
+                                    >
+                                        {modalityData?.reps} {modalityData.reps_unit}
+                                    </Text>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                );
+            case 'as-many-rounds':
+                return (
+                    <View>
+                        <Text
+                            style={{
+                                color: '#FFFFFF',
+                                textTransform: 'uppercase'
+                            }}
+                        >
+                            {modalityData?.modality.replace(/-/g, ' ')}
+                        </Text>
+
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: 3,
+                                width: '100%'
+                            }}
+                        >
+                            <Image
+                                source={require('@/assets/images/time-icon.png')}
+                                style={{ width: 16, height: 16 }}
+                            />
+
+                            <Text style={{ color: '#FFFFFF',  width: '100%', textTransform: 'uppercase' }}>
+                                {modalityData?.duration} {modalityData?.duration_unit}
+                            </Text>
+                        </View>
+                    </View>
+                );
+            default:
+                return null;
+        }
+    };
+
     if(loading)
         return <Loader />;
 
@@ -1035,7 +1156,7 @@ const ExercisesPage = ({
                                             <TouchableOpacity
                                                 activeOpacity={0.8}
                                                 style={[styles.buttonImageContainer, { marginBottom: 19 }]}
-                                                onPress={() => openCalculateModal(value ?? null)}
+                                                onPress={() => openCalculateModal(value)}
                                             >
                                                 <Image
                                                     source={require('@/assets/images/mathematical-icon.png')}
@@ -1085,14 +1206,20 @@ const ExercisesPage = ({
                                             <View>
                                                 <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Sets</Text>
                                                 <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                                    {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets.length}
+                                                    {value?.modality_data?.sets ?
+                                                        value?.modality_data?.sets :
+                                                        value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets.length
+                                                    }
                                                 </Text>
                                             </View>
 
                                             <View>
                                                 <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Reps</Text>
                                                 <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                                    {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets[0]?.reps ?? '?'}
+                                                    {value?.modality_data?.reps ?
+                                                        value?.modality_data?.reps :
+                                                        value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets[0]?.reps
+                                                    }
                                                 </Text>
                                             </View>
 
@@ -1128,13 +1255,15 @@ const ExercisesPage = ({
                                         </Text>
                                     }
 
+                                    {renderModality(value?.modality_data)}
+
                                     {value?.modality === 'repetition-based' && value?.calculated_sets.length === 0 &&
                                         <PolygonButtonCustom
                                             text='Let’s calculate this'
                                             style={{
                                                 marginTop: 16
                                             }}
-                                            onPress={() => openCalculateModal(value ?? null)}
+                                            onPress={() => openCalculateModal(value)}
                                         />
                                     }
                                 </View>
@@ -1202,7 +1331,7 @@ const ExercisesPage = ({
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         style={[styles.buttonImageContainer, { marginBottom: 19 }]}
-                                        onPress={() => openCalculateModal(value ?? null)}
+                                        onPress={() => openCalculateModal(value)}
                                     >
                                         <Image
                                             source={require('@/assets/images/mathematical-icon.png')}
@@ -1318,14 +1447,20 @@ const ExercisesPage = ({
                                     <View>
                                         <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Sets</Text>
                                         <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                            {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets.length}
+                                            {value?.modality_data?.sets ?
+                                                value?.modality_data?.sets :
+                                                value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets.length
+                                            }
                                         </Text>
                                     </View>
 
                                     <View>
                                         <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Reps</Text>
                                         <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                            {value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets[0]?.reps ?? '?'}
+                                            {value?.modality_data?.reps ?
+                                                value?.modality_data?.reps :
+                                                value?.calculated_sets.length === 0 ? '?' : value?.calculated_sets[0]?.reps
+                                            }
                                         </Text>
                                     </View>
 
@@ -1339,16 +1474,7 @@ const ExercisesPage = ({
                             }
 
                             {value?.modality && value?.modality !== 'repetition-based' &&
-                                <Text
-                                    fontFamily='CeraCY-Regular'
-                                    style={{
-                                        color: '#FFFFFF',
-                                        marginTop: 16,
-                                        textTransform: 'uppercase'
-                                    }}
-                                >
-                                    {value.modality.replace(/-/g, ' ')}
-                                </Text>
+                                renderModality(value?.modality_data)
                             }
 
                             {value?.modality === 'repetition-based' && value?.calculated_sets.length === 0 &&
@@ -1358,7 +1484,7 @@ const ExercisesPage = ({
                                         width: '100%',
                                         marginTop: 16
                                     }}
-                                    onPress={() => openCalculateModal(value ?? null)}
+                                    onPress={() => openCalculateModal(value)}
                                 />
                             }
                         </View>
@@ -1846,7 +1972,7 @@ const ExercisesPage = ({
                     </View>
 
                     <ScrollView style={{ maxHeight: 340 }}>
-                        {selectedCalculateExercise?.is_body_weight === 0 && (suggestedExercises.option_1.length === 0 && suggestedExercises.option_2.length === 0) ?
+                        {selectedCalculateExercise?.is_body_weight === 0 && (suggestedExercises?.option_1?.length === 0 && suggestedExercises?.option_2?.length === 0) ?
                             <View>
                                 <Input
                                     textWhite={true}
@@ -1953,6 +2079,7 @@ const ExercisesPage = ({
                                     }}
                                 >
                                     <Checkbox
+                                        disabled={Boolean(selectedCalculateExercise?.modality_data?.sets && selectedCalculateExercise?.modality_data?.reps)}
                                         value={calculateForm.decreaseWeight}
                                         onValueChange={(value) => {
                                             setCalculateForm(prev => ({
