@@ -2005,6 +2005,7 @@ const ExercisesPage = ({
                                     textWhite={true}
                                     style={{ marginBottom: 32 }}
                                     label='ENTER MAX REPS'
+                                    disabled={Boolean(selectedCalculateExercise?.modality_data?.sets && selectedCalculateExercise?.modality_data?.reps)}
                                     value={calculateForm.maxReps}
                                     onChange={value => {
                                         setCalculateForm(prev => ({
@@ -2030,6 +2031,7 @@ const ExercisesPage = ({
                                     style={{ marginBottom: 32 }}
                                     label='ENTER DESIRED MAX REPS'
                                     value={calculateForm.targetReps}
+                                    disabled={Boolean(selectedCalculateExercise?.modality_data?.sets && selectedCalculateExercise?.modality_data?.reps)}
                                     onChange={value => {
                                         setCalculateForm(prev => ({
                                             ...prev,
@@ -2053,6 +2055,7 @@ const ExercisesPage = ({
                                     textWhite={true}
                                     style={{ marginBottom: 32 }}
                                     label='ENTER SETS'
+                                    disabled={Boolean(selectedCalculateExercise?.modality_data?.sets && selectedCalculateExercise?.modality_data?.reps)}
                                     value={calculateForm.sets}
                                     onChange={value => {
                                         setCalculateForm(prev => ({
@@ -2073,68 +2076,71 @@ const ExercisesPage = ({
                                     errorText={errorCalculateForm.sets.message}
                                 />
 
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        gap: 8,
-                                        alignItems: 'center',
-                                        marginBottom: 16
-                                    }}
-                                >
-                                    <Checkbox
-                                        disabled={Boolean(selectedCalculateExercise?.modality_data?.sets && selectedCalculateExercise?.modality_data?.reps)}
-                                        value={calculateForm.decreaseWeight}
-                                        onValueChange={(value) => {
-                                            setCalculateForm(prev => ({
-                                                ...prev,
-                                                decreaseWeight: value
-                                            }));
-                                        }}
-                                        color={calculateForm.decreaseWeight ? '#656C26' : '#FFFFFF'}
-                                    />
+                                {!Boolean(selectedCalculateExercise?.modality_data?.sets && selectedCalculateExercise?.modality_data?.reps) && (
+                                    <>
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                gap: 8,
+                                                alignItems: 'center',
+                                                marginBottom: 16
+                                            }}
+                                        >
+                                            <Checkbox
+                                                value={calculateForm.decreaseWeight}
+                                                onValueChange={(value) => {
+                                                    setCalculateForm(prev => ({
+                                                        ...prev,
+                                                        decreaseWeight: value
+                                                    }));
+                                                }}
+                                                color={calculateForm.decreaseWeight ? '#656C26' : '#FFFFFF'}
+                                            />
 
-                                    <Text
-                                        style={{
-                                            color: '#FFFFFF',
-                                            fontSize: 16,
-                                            lineHeight: 16
-                                        }}
-                                        fontFamily='ChakraPetch-Regular'
-                                    >
-                                        Should decrease weight?
-                                    </Text>
-                                </View>
+                                            <Text
+                                                style={{
+                                                    color: '#FFFFFF',
+                                                    fontSize: 16,
+                                                    lineHeight: 16
+                                                }}
+                                                fontFamily='ChakraPetch-Regular'
+                                            >
+                                                Should decrease weight?
+                                            </Text>
+                                        </View>
 
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        gap: 8,
-                                        alignItems: 'center',
-                                        marginBottom: 32
-                                    }}
-                                >
-                                    <Checkbox
-                                        value={calculateForm.failed}
-                                        onValueChange={(value) => {
-                                            setCalculateForm(prev => ({
-                                                ...prev,
-                                                failed: value
-                                            }));
-                                        }}
-                                        color={calculateForm.failed ? '#656C26' : '#FFFFFF'}
-                                    />
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                gap: 8,
+                                                alignItems: 'center',
+                                                marginBottom: 32
+                                            }}
+                                        >
+                                            <Checkbox
+                                                value={calculateForm.failed}
+                                                onValueChange={(value) => {
+                                                    setCalculateForm(prev => ({
+                                                        ...prev,
+                                                        failed: value
+                                                    }));
+                                                }}
+                                                color={calculateForm.failed ? '#656C26' : '#FFFFFF'}
+                                            />
 
-                                    <Text
-                                        style={{
-                                            color: '#FFFFFF',
-                                            fontSize: 16,
-                                            lineHeight: 16
-                                        }}
-                                        fontFamily='ChakraPetch-Regular'
-                                    >
-                                        Did you fail the exercise?
-                                    </Text>
-                                </View>
+                                            <Text
+                                                style={{
+                                                    color: '#FFFFFF',
+                                                    fontSize: 16,
+                                                    lineHeight: 16
+                                                }}
+                                                fontFamily='ChakraPetch-Regular'
+                                            >
+                                                Did you fail the exercise?
+                                            </Text>
+                                        </View>
+                                    </>
+                                )}
 
                                 <PolygonButtonCustom
                                     text='Calculate'

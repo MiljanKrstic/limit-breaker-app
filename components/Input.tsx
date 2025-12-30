@@ -22,7 +22,8 @@ const Input = ({
     error,
     errorText,
     inputMode,
-    textWhite
+    textWhite,
+    disabled
 }: {
     style?: ViewStyle,
     label: string,
@@ -33,6 +34,7 @@ const Input = ({
     errorText?: string;
     inputMode: InputModeOptions,
     textWhite?: boolean;
+    disabled?: boolean
 }) =>
 {
     const [isFocused, setIsFocused] = useState(false);
@@ -97,6 +99,7 @@ const Input = ({
                 value={value}
                 onChangeText={onChange}
                 onPressOut={onPressOut}
+                editable={!disabled}
             />
         </View>
     );
