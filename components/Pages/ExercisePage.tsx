@@ -488,6 +488,8 @@ const ExercisePage = ({
 
         setLoading(false);
     };
+    const modalityData = exercise?.modality_data;
+    console.log(modalityData);
 
     const renderReportPain = () =>
     {
@@ -866,23 +868,42 @@ const ExercisePage = ({
                                 <View>
                                     <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Sets</Text>
                                     <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                        ?
+                                         {exercise?.modality_data?.sets ?
+                                            exercise?.modality_data?.sets :
+                                            exercise?.calculated_sets.length === 0 ? '?' : exercise?.calculated_sets.length
+                                         }
                                     </Text>
                                 </View>
 
                                 <View>
                                     <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Reps</Text>
                                     <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                        ?
+                                        {exercise?.modality_data?.reps ?
+                                            exercise?.modality_data?.reps :
+                                            exercise?.calculated_sets.length === 0 ? '?' : exercise?.calculated_sets.length
+                                        }
                                     </Text>
                                 </View>
+                               {
+                                 !(
+                                   Number(exercise?.is_body_weight) === 1 &&
+                                   exercise?.modality_data?.sets != null &&
+                                   exercise?.modality_data?.reps != null
+                                 ) && (
+                                   <View>
+                                     <Text fontFamily="CeraCY-Regular" style={styles.cardText}>
+                                       Weight
+                                     </Text>
+                                     <Text fontFamily="CeraCY-Regular" style={styles.cardText}>
+                                       {(exercise?.calculated_sets?.length ?? 0) === 0
+                                         ? '?'
+                                         : `${exercise?.calculated_sets?.[0]?.weight ?? '?'} KG`}
+                                     </Text>
+                                   </View>
+                                 )
+                               }
 
-                                <View>
-                                    <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Weight</Text>
-                                    <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                        ?
-                                    </Text>
-                                </View>
+
 
                                 <TouchableOpacity
                                     activeOpacity={0.8}
@@ -925,21 +946,176 @@ const ExercisePage = ({
                                 )}
                             </View>
                         }
+                        {
+                          exercise?.modality === 'repetition-based' &&
+                          (exercise?.calculated_sets?.length ?? 0) === 0 &&
+                          (
+                            Number(exercise?.is_body_weight) === 0 ||
+                            (
+                              Number(exercise?.is_body_weight) === 1 &&
+                              exercise?.modality_data?.reps == null
+                            )
+                          ) && (
+                            <View style={{ marginBottom: 24 }}>
+                              <PolygonButtonCustom
+                                text="Let’s calculate this"
+                                style={{
+                                  width: '80%',
+                                  marginTop: 16
+                                }}
+                                onPress={() => openCalculateModal(exercise ?? null)}
+                              />
+                            </View>
+                          )
+                        }
 
-                        <View style={{ marginBottom: 24 }}>
-                            {exercise?.calculated_sets.length === 0 &&
-                                <PolygonButtonCustom
-                                    text='Let’s calculate this'
-                                    style={{
-                                        width: '80%',
-                                        marginTop: 16
-                                    }}
-                                    onPress={() => openCalculateModal(exercise ?? null)}
-                                />
-                            }
-                        </View>
                     </View>
                 }
+                {exercise?.modality === 'time-based' && modalityData && (
+                  <View style={styles.cardMainContainer}>
+                    <Text style={styles.cardMainText}>in Today’s workout</Text>
+
+                    {/* MODALITY NAME */}
+                    <Text
+                      style={{
+                        color: '#FFFFFF',
+                        textTransform: 'uppercase',
+                        marginBottom: 8,
+                      }}
+                    >
+                      {modalityData.modality.replace(/-/g, ' ')}
+                    </Text>
+
+                    {/* SETS + TIME */}
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        gap: 16,
+                        alignItems: 'center',
+                      }}
+                    >
+                      {/* SETS */}
+                      <Text
+                        style={{
+                          color: '#FFFFFF',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        sets: {modalityData.sets ?? '?'}
+                      </Text>
+
+                      {/* TIME */}
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 6,
+                        }}
+                      >
+                        <Image
+                          source={require('@/assets/images/time-icon.png')}
+                          style={{ width: 16, height: 16 }}
+                        />
+
+                        <Text
+                          style={{
+                            color: '#FFFFFF',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          {modalityData.reps ?? '?'} {modalityData.reps_unit ?? ''}
+                        </Text>
+
+                        {modalityData.unilateral === 1 && (
+                        <View
+                          style={{
+                            marginLeft: 8,
+                            paddingHorizontal: 6,
+                            paddingVertical: 2,
+                            borderRadius: 4,
+                            backgroundColor: '#404518',
+                          }}
+                        >
+                          <Text style={{ color: '#FFFFFF', fontSize: 12 }}>
+                            unilateral
+                          </Text>
+                        </View>
+                      )}
+                      </View>
+                    </View>
+
+                    {/* UNILATERAL */}
+
+                  </View>
+                )}
+
+                {exercise?.modality === 'as-many-rounds' && modalityData && (
+                                  <View style={styles.cardMainContainer}>
+                                    <Text style={styles.cardMainText}>in Today’s workout</Text>
+
+                                    {/* MODALITY NAME */}
+                                    <Text
+                                      style={{
+                                        color: '#FFFFFF',
+                                        textTransform: 'uppercase',
+                                        marginBottom: 8,
+                                      }}
+                                    >
+                                      as many rounds as possible
+                                    </Text>
+
+                                    {/* duration + TIME */}
+                                    <View
+                                      style={{
+                                        flexDirection: 'row',
+                                        gap: 16,
+                                        alignItems: 'center',
+                                      }}
+                                    >
+                                      {/* TIME */}
+                                      <View
+                                        style={{
+                                          flexDirection: 'row',
+                                          alignItems: 'center',
+                                          gap: 6,
+                                        }}
+                                      >
+                                        <Image
+                                          source={require('@/assets/images/time-icon.png')}
+                                          style={{ width: 16, height: 16 }}
+                                        />
+
+                                        <Text
+                                          style={{
+                                            color: '#FFFFFF',
+                                            textTransform: 'uppercase',
+                                          }}
+                                        >
+                                          {modalityData.duration ?? '?'} {modalityData.duration_unit ?? ''}
+                                        </Text>
+
+                                        {modalityData.unilateral === 1 && (
+                                        <View
+                                          style={{
+                                            marginLeft: 8,
+                                            paddingHorizontal: 6,
+                                            paddingVertical: 2,
+                                            borderRadius: 4,
+                                            backgroundColor: '#404518',
+                                          }}
+                                        >
+                                          <Text style={{ color: '#FFFFFF', fontSize: 12 }}>
+                                            unilateral
+                                          </Text>
+                                        </View>
+                                      )}
+                                      </View>
+                                    </View>
+
+                                  </View>
+                                )}
+
+
 
                 <View>
                     <TouchableOpacity
