@@ -1074,10 +1074,15 @@ const ExercisesPage = ({
             pageKey={'exercises_page'}
         >
             <ImageBackground
-                style={styles.backgroundImageContainer}
-                resizeMode='cover'
-                source={require('@/assets/images/workout-image.png')}
+              style={styles.backgroundImageContainer}
+              resizeMode="cover"
+              source={
+                exercise?.image_path
+                  ? { uri: exercise.image_path }
+                  : require('@/assets/images/workout-image.png')
+              }
             >
+
                 <View style={styles.mainContainer}>
                     <TextBold
                         style={styles.mainTextBackground}
@@ -1510,7 +1515,8 @@ const ExercisesPage = ({
                                         )
                                         ||
                                         (
-                                          Number(value?.calculated_sets?.[0]?.weight ?? 0) === 0
+                                          (value?.calculated_sets?.length ?? 0) > 0 &&
+                                          Number(value?.calculated_sets?.[0]?.weight) === 0
                                         )
                                       ) && (
                                         <>
