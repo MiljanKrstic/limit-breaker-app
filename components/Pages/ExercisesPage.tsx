@@ -1300,7 +1300,7 @@ const ExercisesPage = ({
                                         value?.calculated_sets?.length === 0 &&
                                         (
                                             value?.body_weight === 0 ||
-                                            (value?.body_weight === 1 && modalityData?.reps === null)
+                                            (value?.body_weight === 1 &&  value?.modality?.reps === null)
                                         ) && (
                                             <PolygonButtonCustom
                                                 text="Let’s calculate this"
@@ -3439,8 +3439,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end'
     },
     cardColumn: {
-        flex: 1,
-        alignItems: 'left'
+        flex: 1
     },
     cardHeadingText: {
         textTransform: 'uppercase',
