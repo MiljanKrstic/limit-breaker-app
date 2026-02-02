@@ -79,7 +79,6 @@ const ExercisesPage = ({
     const [selectedCalculateExercise, setCalculateExercise] = useState<any>(null);
 
     const [reportPainModalVisible, setReportPainModalVisible] = useState<boolean>(false);
-    const suggestedLen = suggestedBodyWeightExercises?.length ?? 0;
 
     const openCalculateModal = (exercise: any | null) =>
     {
@@ -169,6 +168,7 @@ const ExercisesPage = ({
         failed: false,
         fixed: false
     });
+
     const [errorCalculateForm, setErrorCalculateForm] = useState({
         maxReps: {
             message: '',
@@ -187,6 +187,7 @@ const ExercisesPage = ({
             error: false
         }
     });
+
     const [suggestedExercises, setSuggestedExercises] = useState<any>({
         option_1: [],
         option_2: []
@@ -338,171 +339,169 @@ const ExercisesPage = ({
     const [suggestedBodyWeightExercises, setSuggestedBodyWeightExercises] = useState<any[]>([]);
 
     const calculateBodyWeightWorkout = async () => {
-      setLoading(() => true);
+        setLoading(() => true);
 
-      if (!calculateFormBodyWeight.bodyWeight) {
-        setErrorCalculateFormBodyWeight(prev => ({
-          ...prev,
-          bodyWeight: {
-            message: 'The body weight field is required.',
-            error: true
-          }
-        }));
+        if (!calculateFormBodyWeight.bodyWeight) {
+            setErrorCalculateFormBodyWeight(prev => ({
+                ...prev,
+                bodyWeight: {
+                    message: 'The body weight field is required.',
+                    error: true
+                }
+            }));
 
-        setLoading(() => false);
-        return;
-      }
-
-      if (!calculateFormBodyWeight.maxReps) {
-        setErrorCalculateFormBodyWeight(prev => ({
-          ...prev,
-          maxReps: {
-            message: 'The max reps field is required.',
-            error: true
-          }
-        }));
-
-        setLoading(() => false);
-        return;
-      }
-
-      if (!calculateFormBodyWeight.targetReps) {
-        setErrorCalculateFormBodyWeight(prev => ({
-          ...prev,
-          targetReps: {
-            message: 'The desired reps field is required.',
-            error: true
-          }
-        }));
-
-        setLoading(() => false);
-        return;
-      }
-
-      if (!calculateFormBodyWeight.sets) {
-        setErrorCalculateFormBodyWeight(prev => ({
-          ...prev,
-          sets: {
-            message: 'The reps field is required.',
-            error: true
-          }
-        }));
-
-        setLoading(() => false);
-        return;
-      }
-
-      const payload = {
-        ...calculateFormBodyWeight,
-        exercise_id: Number(selectedCalculateExercise?.id ?? calculateFormBodyWeight.exercise_id),
-        bodyWeight: Number(calculateFormBodyWeight.bodyWeight),
-        maxReps: Number(calculateFormBodyWeight.maxReps),
-        targetReps: Number(calculateFormBodyWeight.targetReps),
-        sets: Number(calculateFormBodyWeight.sets),
-        weighted: false
-      };
-
-      const { ok, body } = await authorizedFetch(
-        'POST',
-        'calculate-body-weight-workout',
-        payload
-      );
-
-      if (!ok) {
-        if (body?.errors?.bodyWeight) {
-          setErrorCalculateFormBodyWeight(prev => ({
-            ...prev,
-            bodyWeight: {
-              message: body?.errors?.bodyWeight[0],
-              error: true
-            }
-          }));
+            setLoading(() => false);
+            return;
         }
 
-        if (body?.errors?.maxReps) {
-          setErrorCalculateFormBodyWeight(prev => ({
-            ...prev,
-            maxReps: {
-              message: body?.errors?.maxReps[0],
-              error: true
-            }
-          }));
+        if (!calculateFormBodyWeight.maxReps) {
+            setErrorCalculateFormBodyWeight(prev => ({
+                ...prev,
+                maxReps: {
+                    message: 'The max reps field is required.',
+                    error: true
+                }
+            }));
+
+            setLoading(() => false);
+            return;
         }
 
-        if (body?.errors?.targetReps) {
-          setErrorCalculateFormBodyWeight(prev => ({
-            ...prev,
-            targetReps: {
-              message: body?.errors?.targetReps[0],
-              error: true
-            }
-          }));
+        if (!calculateFormBodyWeight.targetReps) {
+            setErrorCalculateFormBodyWeight(prev => ({
+                ...prev,
+                targetReps: {
+                    message: 'The desired reps field is required.',
+                    error: true
+                }
+            }));
+
+            setLoading(() => false);
+            return;
         }
 
-        if (body?.errors?.sets) {
-          setErrorCalculateFormBodyWeight(prev => ({
-            ...prev,
-            sets: {
-              message: body?.errors?.sets[0],
-              error: true
-            }
-          }));
+        if (!calculateFormBodyWeight.sets) {
+            setErrorCalculateFormBodyWeight(prev => ({
+                ...prev,
+                sets: {
+                    message: 'The reps field is required.',
+                    error: true
+                }
+            }));
+
+            setLoading(() => false);
+            return;
         }
 
+        const payload = {
+            ...calculateFormBodyWeight,
+            exercise_id: Number(selectedCalculateExercise?.id ?? calculateFormBodyWeight.exercise_id),
+            bodyWeight: Number(calculateFormBodyWeight.bodyWeight),
+            maxReps: Number(calculateFormBodyWeight.maxReps),
+            targetReps: Number(calculateFormBodyWeight.targetReps),
+            sets: Number(calculateFormBodyWeight.sets),
+            weighted: false
+        };
+
+        const { ok, body } = await authorizedFetch(
+            'POST',
+            'calculate-body-weight-workout',
+            payload
+        );
+
+        if (!ok) {
+            if (body?.errors?.bodyWeight) {
+                setErrorCalculateFormBodyWeight(prev => ({
+                    ...prev,
+                    bodyWeight: {
+                        message: body?.errors?.bodyWeight[0],
+                        error: true
+                    }
+                }));
+            }
+
+            if (body?.errors?.maxReps) {
+                setErrorCalculateFormBodyWeight(prev => ({
+                    ...prev,
+                    maxReps: {
+                        message: body?.errors?.maxReps[0],
+                        error: true
+                    }
+                }));
+            }
+
+            if (body?.errors?.targetReps) {
+                setErrorCalculateFormBodyWeight(prev => ({
+                    ...prev,
+                    targetReps: {
+                        message: body?.errors?.targetReps[0],
+                        error: true
+                    }
+                }));
+            }
+
+            if (body?.errors?.sets) {
+                setErrorCalculateFormBodyWeight(prev => ({
+                    ...prev,
+                    sets: {
+                        message: body?.errors?.sets[0],
+                        error: true
+                    }
+                }));
+            }
+
+            setLoading(() => false);
+            return;
+        }
+
+        await fetchData();
+
+
+        const optionArray =
+            body?.option_1 ??
+            body?.option_2 ??
+            body?.option_3 ??
+            (body && typeof body === 'object'
+                ? body[Object.keys(body)[0]]
+                : null);
+
+        const result =
+            body?.workout?.calculated_sets ??
+            body?.workout?.suggestedBodyWeightExercises ??
+            body?.workout?.suggested_body_weight_exercises ??
+            body?.suggestedBodyWeightExercises ??
+            body?.suggested_body_weight_exercises ??
+            body?.calculated_sets ??
+            optionArray ??
+            body?.workout ??
+            [];
+
+
+        setSuggestedBodyWeightExercises(Array.isArray(result) ? result : []);
         setLoading(() => false);
-        return;
-      }
-
-      console.log('calculate-body-weight-workout response:', body);
-
-      await fetchData();
-
-
-      const optionArray =
-        body?.option_1 ??
-        body?.option_2 ??
-        body?.option_3 ??
-        (body && typeof body === 'object'
-          ? body[Object.keys(body)[0]]
-          : null);
-
-      const result =
-        body?.workout?.calculated_sets ??
-        body?.workout?.suggestedBodyWeightExercises ??
-        body?.workout?.suggested_body_weight_exercises ??
-        body?.suggestedBodyWeightExercises ??
-        body?.suggested_body_weight_exercises ??
-        body?.calculated_sets ??
-        optionArray ??
-        body?.workout ??
-        [];
-
-
-      setSuggestedBodyWeightExercises(Array.isArray(result) ? result : []);
-      setLoading(() => false);
     };
 
     useEffect(() => {
-      if (selectedCalculateExercise?.is_body_weight === 0) {
-        setCalculateForm(prev => ({
-          ...prev,
-          exercise_id: selectedCalculateExercise?.id
-        }));
-      } else {
-        setCalculateFormBodyWeight(prev => ({
-          ...prev,
-          exercise_id: selectedCalculateExercise?.id
-        }));
-      }
+        if (selectedCalculateExercise?.is_body_weight === 0) {
+            setCalculateForm(prev => ({
+                ...prev,
+                exercise_id: selectedCalculateExercise?.id
+            }));
+        } else {
+            setCalculateFormBodyWeight(prev => ({
+                ...prev,
+                exercise_id: selectedCalculateExercise?.id
+            }));
+        }
 
-      if (selectedCalculateExercise?.modality_data?.sets && selectedCalculateExercise?.modality_data?.reps) {
-        setCalculateForm(prev => ({
-          ...prev,
-          fixed: true,
-          sets: selectedCalculateExercise?.modality_data?.sets?.toString(),
-          targetReps: selectedCalculateExercise?.modality_data?.reps?.toString(),
-        }));
-      }
+        if (selectedCalculateExercise?.modality_data?.sets && selectedCalculateExercise?.modality_data?.reps) {
+            setCalculateForm(prev => ({
+                ...prev,
+                fixed: true,
+                sets: selectedCalculateExercise?.modality_data?.sets?.toString(),
+                targetReps: selectedCalculateExercise?.modality_data?.reps?.toString(),
+            }));
+        }
     }, [selectedCalculateExercise]);
 
     const closeModal = () =>
@@ -1074,13 +1073,13 @@ const ExercisesPage = ({
             pageKey={'exercises_page'}
         >
             <ImageBackground
-              style={styles.backgroundImageContainer}
-              resizeMode="cover"
-              source={
-                exercise?.image_path
-                  ? { uri: exercise.image_path }
-                  : require('@/assets/images/workout-image.png')
-              }
+                style={styles.backgroundImageContainer}
+                resizeMode="cover"
+                source={
+                    exercise?.image_path
+                        ? { uri: exercise.image_path }
+                        : require('@/assets/images/workout-image.png')
+                }
             >
 
                 <View style={styles.mainContainer}>
@@ -1297,18 +1296,18 @@ const ExercisesPage = ({
                                     {renderModality(value?.modality_data)}
 
                                     {
-                                      value?.modality === 'repetition-based' &&
-                                      value?.calculated_sets?.length === 0 &&
-                                      (
-                                        value?.body_weight === 0 ||
-                                        (value?.body_weight === 1 && modalityData?.reps === null)
-                                      ) && (
-                                        <PolygonButtonCustom
-                                          text="Let’s calculate this"
-                                          style={{ marginTop: 16 }}
-                                          onPress={() => openCalculateModal(value)}
-                                        />
-                                      )
+                                        value?.modality === 'repetition-based' &&
+                                        value?.calculated_sets?.length === 0 &&
+                                        (
+                                            value?.body_weight === 0 ||
+                                            (value?.body_weight === 1 && modalityData?.reps === null)
+                                        ) && (
+                                            <PolygonButtonCustom
+                                                text="Let’s calculate this"
+                                                style={{ marginTop: 16 }}
+                                                onPress={() => openCalculateModal(value)}
+                                            />
+                                        )
                                     }
 
                                 </View>
@@ -1489,47 +1488,47 @@ const ExercisesPage = ({
 
                             {value?.modality === 'repetition-based' &&
                                 <View style={styles.cardContainer}>
-                                  <View style={styles.cardColumn}>
-                                    <Text style={styles.cardText}>Sets</Text>
-                                    <Text style={styles.cardText}>
-                                      {value?.modality_data?.sets ??
-                                        ((value?.calculated_sets?.length ?? 0) === 0 ? '?' : value?.calculated_sets.length)}
-                                    </Text>
-                                  </View>
+                                    <View style={styles.cardColumn}>
+                                        <Text style={styles.cardText}>Sets</Text>
+                                        <Text style={styles.cardText}>
+                                            {value?.modality_data?.sets ??
+                                                ((value?.calculated_sets?.length ?? 0) === 0 ? '?' : value?.calculated_sets.length)}
+                                        </Text>
+                                    </View>
 
-                                  <View style={styles.cardColumn}>
-                                    <Text style={styles.cardText}>Reps</Text>
-                                    <Text style={styles.cardText}>
-                                      {value?.modality_data?.reps ??
-                                        ((value?.calculated_sets?.length ?? 0) === 0 ? '?' : value?.calculated_sets[0]?.reps)}
-                                    </Text>
-                                  </View>
+                                    <View style={styles.cardColumn}>
+                                        <Text style={styles.cardText}>Reps</Text>
+                                        <Text style={styles.cardText}>
+                                            {value?.modality_data?.reps ??
+                                                ((value?.calculated_sets?.length ?? 0) === 0 ? '?' : value?.calculated_sets[0]?.reps)}
+                                        </Text>
+                                    </View>
 
-                                  <View style={styles.cardColumn}>
-                                    {
-                                      !(
-                                        (
-                                          Number(value?.is_body_weight) === 1 &&
-                                          value?.modality_data?.sets != null &&
-                                          value?.modality_data?.reps != null
-                                        )
-                                        ||
-                                        (
-                                          (value?.calculated_sets?.length ?? 0) > 0 &&
-                                          Number(value?.calculated_sets?.[0]?.weight) === 0
-                                        )
-                                      ) && (
-                                        <>
-                                          <Text style={styles.cardText}>Weight</Text>
-                                          <Text style={styles.cardText}>
-                                            {(value?.calculated_sets?.length ?? 0) === 0
-                                              ? '?'
-                                              : `${value?.calculated_sets?.[0]?.weight} KG`}
-                                          </Text>
-                                        </>
-                                      )
-                                    }
-                                  </View>
+                                    <View style={styles.cardColumn}>
+                                        {
+                                            !(
+                                                (
+                                                    Number(value?.is_body_weight) === 1 &&
+                                                    value?.modality_data?.sets != null &&
+                                                    value?.modality_data?.reps != null
+                                                )
+                                                ||
+                                                (
+                                                    (value?.calculated_sets?.length ?? 0) > 0 &&
+                                                    Number(value?.calculated_sets?.[0]?.weight) === 0
+                                                )
+                                            ) && (
+                                                <>
+                                                    <Text style={styles.cardText}>Weight</Text>
+                                                    <Text style={styles.cardText}>
+                                                        {(value?.calculated_sets?.length ?? 0) === 0
+                                                            ? '?'
+                                                            : `${value?.calculated_sets?.[0]?.weight} KG`}
+                                                    </Text>
+                                                </>
+                                            )
+                                        }
+                                    </View>
 
                                 </View>
 
@@ -1541,38 +1540,38 @@ const ExercisesPage = ({
                             }
 
                             {value?.modality_data?.unilateral === 1 && (
-                                                                        <View style={styles.cardContainer}>
+                                <View style={styles.cardContainer}>
 
-                                <View
-                                  style={{
-                                    paddingHorizontal: 6,
-                                    paddingVertical: 2,
-                                    borderRadius: 4,
-                                    marginTop: 2,
-                                    marginBottom: 2,
-                                    backgroundColor: '#404518',
-                                  }}
-                                >
-                                   <Text style={{ color: '#FFFFFF', fontSize: 12 }}>unilateral</Text>
+                                    <View
+                                        style={{
+                                            paddingHorizontal: 6,
+                                            paddingVertical: 2,
+                                            borderRadius: 4,
+                                            marginTop: 2,
+                                            marginBottom: 2,
+                                            backgroundColor: '#404518',
+                                        }}
+                                    >
+                                        <Text style={{ color: '#FFFFFF', fontSize: 12 }}>unilateral</Text>
+                                    </View>
                                 </View>
-                                </View>
-                                )}
+                            )}
                             {
-                              value?.modality === 'repetition-based' &&
-                              (value?.calculated_sets?.length ?? 0) === 0 &&
-                              (
-                                Number(value?.is_body_weight) !== 1 ||
+                                value?.modality === 'repetition-based' &&
+                                (value?.calculated_sets?.length ?? 0) === 0 &&
                                 (
-                                  Number(value?.is_body_weight) === 1 &&
-                                  (value?.modality_data?.reps == null || value?.modality_data?.sets == null)
+                                    Number(value?.is_body_weight) !== 1 ||
+                                    (
+                                        Number(value?.is_body_weight) === 1 &&
+                                        (value?.modality_data?.reps == null || value?.modality_data?.sets == null)
+                                    )
+                                ) && (
+                                    <PolygonButtonCustom
+                                        text="Let’s calculate this"
+                                        style={{ marginTop: 16 }}
+                                        onPress={() => openCalculateModal(value)}
+                                    />
                                 )
-                              ) && (
-                                <PolygonButtonCustom
-                                  text="Let’s calculate this"
-                                  style={{ marginTop: 16 }}
-                                  onPress={() => openCalculateModal(value)}
-                                />
-                              )
                             }
 
                         </View>
@@ -1694,7 +1693,7 @@ const ExercisesPage = ({
                                 {/*        Remind Me Later*/}
                                 {/*    </Text>*/}
                                 {/*</TouchableOpacity>*/}
-                                
+
                                 {/*<Text*/}
                                 {/*    style={{*/}
                                 {/*        color: '#FFFFFF',*/}
@@ -2231,7 +2230,7 @@ const ExercisesPage = ({
                                     onPress={() => calculateWeightedWorkout()}
                                 />
                             </View>
-                        : selectedCalculateExercise?.is_body_weight === 0 &&
+                            : selectedCalculateExercise?.is_body_weight === 0 &&
                             <View>
                                 {suggestedExercises.option_1.map((option: any, index: number) => (
                                     <View
@@ -2304,152 +2303,152 @@ const ExercisesPage = ({
                         }
 
                         {
-                          selectedCalculateExercise?.is_body_weight === 1 &&
-                          (suggestedBodyWeightExercises?.length ?? 0) === 0 ? (
-                            <View>
-                              <Input
-                                textWhite={true}
-                                style={{ marginBottom: 32 }}
-                                label='ENTER BODY WEIGHT'
-                                value={calculateFormBodyWeight.bodyWeight}
-                                onChange={value => {
-                                  setCalculateFormBodyWeight(prev => ({
-                                    ...prev,
-                                    bodyWeight: value
-                                  }));
+                            selectedCalculateExercise?.is_body_weight === 1 &&
+                            (suggestedBodyWeightExercises?.length ?? 0) === 0 ? (
+                                <View>
+                                    <Input
+                                        textWhite={true}
+                                        style={{ marginBottom: 32 }}
+                                        label='ENTER BODY WEIGHT'
+                                        value={calculateFormBodyWeight.bodyWeight}
+                                        onChange={value => {
+                                            setCalculateFormBodyWeight(prev => ({
+                                                ...prev,
+                                                bodyWeight: value
+                                            }));
 
-                                  setErrorCalculateFormBodyWeight(prev => ({
-                                    ...prev,
-                                    bodyWeight: {
-                                      message: '',
-                                      error: false
-                                    }
-                                  }));
-                                }}
-                                inputMode='numeric'
-                                error={errorCalculateFormBodyWeight.bodyWeight.error}
-                                errorText={errorCalculateFormBodyWeight.bodyWeight.message}
-                              />
+                                            setErrorCalculateFormBodyWeight(prev => ({
+                                                ...prev,
+                                                bodyWeight: {
+                                                    message: '',
+                                                    error: false
+                                                }
+                                            }));
+                                        }}
+                                        inputMode='numeric'
+                                        error={errorCalculateFormBodyWeight.bodyWeight.error}
+                                        errorText={errorCalculateFormBodyWeight.bodyWeight.message}
+                                    />
 
-                              <Input
-                                textWhite={true}
-                                style={{ marginBottom: 32 }}
-                                label='ENTER MAX REPS'
-                                value={calculateFormBodyWeight.maxReps}
-                                onChange={value => {
-                                  setCalculateFormBodyWeight(prev => ({
-                                    ...prev,
-                                    maxReps: value
-                                  }));
+                                    <Input
+                                        textWhite={true}
+                                        style={{ marginBottom: 32 }}
+                                        label='ENTER MAX REPS'
+                                        value={calculateFormBodyWeight.maxReps}
+                                        onChange={value => {
+                                            setCalculateFormBodyWeight(prev => ({
+                                                ...prev,
+                                                maxReps: value
+                                            }));
 
-                                  setErrorCalculateFormBodyWeight(prev => ({
-                                    ...prev,
-                                    maxReps: {
-                                      message: '',
-                                      error: false
-                                    }
-                                  }));
-                                }}
-                                inputMode='numeric'
-                                error={errorCalculateFormBodyWeight.maxReps.error}
-                                errorText={errorCalculateFormBodyWeight.maxReps.message}
-                              />
+                                            setErrorCalculateFormBodyWeight(prev => ({
+                                                ...prev,
+                                                maxReps: {
+                                                    message: '',
+                                                    error: false
+                                                }
+                                            }));
+                                        }}
+                                        inputMode='numeric'
+                                        error={errorCalculateFormBodyWeight.maxReps.error}
+                                        errorText={errorCalculateFormBodyWeight.maxReps.message}
+                                    />
 
-                              <Input
-                                textWhite={true}
-                                style={{ marginBottom: 32 }}
-                                label='ENTER DESIRED MAX REPS'
-                                value={calculateFormBodyWeight.targetReps}
-                                onChange={value => {
-                                  setCalculateFormBodyWeight(prev => ({
-                                    ...prev,
-                                    targetReps: value
-                                  }));
+                                    <Input
+                                        textWhite={true}
+                                        style={{ marginBottom: 32 }}
+                                        label='ENTER DESIRED MAX REPS'
+                                        value={calculateFormBodyWeight.targetReps}
+                                        onChange={value => {
+                                            setCalculateFormBodyWeight(prev => ({
+                                                ...prev,
+                                                targetReps: value
+                                            }));
 
-                                  setErrorCalculateFormBodyWeight(prev => ({
-                                    ...prev,
-                                    targetReps: {
-                                      message: '',
-                                      error: false
-                                    }
-                                  }));
-                                }}
-                                inputMode='numeric'
-                                error={errorCalculateFormBodyWeight.targetReps.error}
-                                errorText={errorCalculateFormBodyWeight.targetReps.message}
-                              />
+                                            setErrorCalculateFormBodyWeight(prev => ({
+                                                ...prev,
+                                                targetReps: {
+                                                    message: '',
+                                                    error: false
+                                                }
+                                            }));
+                                        }}
+                                        inputMode='numeric'
+                                        error={errorCalculateFormBodyWeight.targetReps.error}
+                                        errorText={errorCalculateFormBodyWeight.targetReps.message}
+                                    />
 
-                              <Input
-                                textWhite={true}
-                                style={{ marginBottom: 32 }}
-                                label='ENTER SETS'
-                                value={calculateFormBodyWeight.sets}
-                                onChange={value => {
-                                  setCalculateFormBodyWeight(prev => ({
-                                    ...prev,
-                                    sets: value
-                                  }));
+                                    <Input
+                                        textWhite={true}
+                                        style={{ marginBottom: 32 }}
+                                        label='ENTER SETS'
+                                        value={calculateFormBodyWeight.sets}
+                                        onChange={value => {
+                                            setCalculateFormBodyWeight(prev => ({
+                                                ...prev,
+                                                sets: value
+                                            }));
 
-                                  setErrorCalculateFormBodyWeight(prev => ({
-                                    ...prev,
-                                    sets: {
-                                      message: '',
-                                      error: false
-                                    }
-                                  }));
-                                }}
-                                inputMode='numeric'
-                                error={errorCalculateFormBodyWeight.sets.error}
-                                errorText={errorCalculateFormBodyWeight.sets.message}
-                              />
+                                            setErrorCalculateFormBodyWeight(prev => ({
+                                                ...prev,
+                                                sets: {
+                                                    message: '',
+                                                    error: false
+                                                }
+                                            }));
+                                        }}
+                                        inputMode='numeric'
+                                        error={errorCalculateFormBodyWeight.sets.error}
+                                        errorText={errorCalculateFormBodyWeight.sets.message}
+                                    />
 
-                              <PolygonButtonCustom
-                                text='Calculate'
-                                onPress={() => calculateBodyWeightWorkout()}
-                              />
-                            </View>
-                          ) : selectedCalculateExercise?.is_body_weight === 1 ? (
-                            <View>
-                              {(suggestedBodyWeightExercises ?? []).map((option: any, index: number) => (
-                                <View
-                                  key={index}
-                                  style={{
-                                    padding: 16,
-                                    backgroundColor: '#242424',
-                                    marginBottom: 16
-                                  }}
-                                >
-                                  <ScrollView contentContainerStyle={styles.cardContainer}>
-                                    <View>
-                                      <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Sets</Text>
-                                      <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                        {option?.sets ?? option?.set ?? '?'}
-                                      </Text>
-                                    </View>
-
-                                    <View>
-                                      <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Reps</Text>
-                                      <Text
-                                        fontFamily='CeraCY-Regular'
-                                        style={styles.cardText}
-                                        ellipsizeMode='tail'
-                                        numberOfLines={5}
-                                      >
-                                        {option?.reps ?? '?'}
-                                      </Text>
-                                    </View>
-
-                                    <View>
-                                      <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Weight</Text>
-                                      <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
-                                        {option?.weight ?? '?'}
-                                      </Text>
-                                    </View>
-                                  </ScrollView>
+                                    <PolygonButtonCustom
+                                        text='Calculate'
+                                        onPress={() => calculateBodyWeightWorkout()}
+                                    />
                                 </View>
-                              ))}
-                            </View>
-                          ) : null
+                            ) : selectedCalculateExercise?.is_body_weight === 1 ? (
+                                <View>
+                                    {(suggestedBodyWeightExercises ?? []).map((option: any, index: number) => (
+                                        <View
+                                            key={index}
+                                            style={{
+                                                padding: 16,
+                                                backgroundColor: '#242424',
+                                                marginBottom: 16
+                                            }}
+                                        >
+                                            <ScrollView contentContainerStyle={styles.cardContainer}>
+                                                <View>
+                                                    <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Sets</Text>
+                                                    <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
+                                                        {option?.sets ?? option?.set ?? '?'}
+                                                    </Text>
+                                                </View>
+
+                                                <View>
+                                                    <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Reps</Text>
+                                                    <Text
+                                                        fontFamily='CeraCY-Regular'
+                                                        style={styles.cardText}
+                                                        ellipsizeMode='tail'
+                                                        numberOfLines={5}
+                                                    >
+                                                        {option?.reps ?? '?'}
+                                                    </Text>
+                                                </View>
+
+                                                <View>
+                                                    <Text fontFamily='CeraCY-Regular' style={styles.cardText}>Weight</Text>
+                                                    <Text fontFamily='CeraCY-Regular' style={styles.cardText}>
+                                                        {option?.weight ?? '?'}
+                                                    </Text>
+                                                </View>
+                                            </ScrollView>
+                                        </View>
+                                    ))}
+                                </View>
+                            ) : null
                         }
 
                     </ScrollView>
@@ -2541,7 +2540,7 @@ const ExercisesPage = ({
                                 {/*        Remind Me Later*/}
                                 {/*    </Text>*/}
                                 {/*</TouchableOpacity>*/}
-                                
+
                                 {/*<Text*/}
                                 {/*    style={{*/}
                                 {/*        color: '#FFFFFF',*/}
@@ -2954,7 +2953,7 @@ const ExercisesPage = ({
                                 {/*        Remind Me Later*/}
                                 {/*    </Text>*/}
                                 {/*</TouchableOpacity>*/}
-                                
+
                                 {/*<Text*/}
                                 {/*    style={{*/}
                                 {/*        color: '#FFFFFF',*/}
