@@ -85,8 +85,6 @@ const styles = StyleSheet.create({
     text: {
         textAlign: 'center',
         textTransform: 'uppercase',
-        position: 'relative',
-        top: -3,
     },
     wrapperLeft: {
         ...wrapper,

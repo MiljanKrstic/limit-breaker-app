@@ -244,14 +244,15 @@ const Index = () =>
                     </Text>
                 ) :
                 categoryWorkouts.map(categoryWorkout => (
-                    <GridImageCard
-                        key={categoryWorkout?.id}
-                        name={categoryWorkout?.name}
-                        durationWeeks={categoryWorkout?.duration_weeks}
-                        onPress={() => {
-                            router.push(`/workout/${categoryWorkout?.id}?page_type=workout`);
-                        }}
-                    />
+                    <View key={categoryWorkout.id} style={styles.protocolItem}>
+                        <GridImageCard
+                            name={categoryWorkout?.name}
+                            durationWeeks={categoryWorkout?.duration_weeks}
+                            onPress={() => {
+                                router.push(`/workout/${categoryWorkout?.id}?page_type=workout`);
+                            }}
+                        />
+                    </View>
                 ))}
             </View>
         </AppLayout>
@@ -259,12 +260,15 @@ const Index = () =>
 };
 
 const styles = StyleSheet.create({
+    protocolItem: {
+        width: '48%',
+    },
     protocolContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        rowGap: 12,
+        gap: 12,
         justifyContent: 'space-between',
-        marginBottom: 24
+        marginBottom: 48
     },
     textContainer: {
         flexDirection: 'row',

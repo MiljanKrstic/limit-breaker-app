@@ -1,29 +1,26 @@
+import { StyleSheet, View, ImageBackground, Image, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image } from 'expo-image';
-import {
-    StyleSheet,
-    View,
-    ImageBackground
-} from 'react-native';
 
-import TextBold from "@/components/TextBold";
-import Text from "@/components/Text";
-import PolygonButtonWhiteSmall from '@/components/PolygonButtonWhiteSmall';
+import TextBold from '@/components/TextBold';
+import Text from '@/components/Text';
+import PolygonButtonCustom from '@/components/PolygonButtonCustom';
 
 const GridImageCard = ({
     name,
     durationWeeks,
-    onPress
+    onPress,
+    style
 }: {
     name: string;
     durationWeeks: string;
     onPress: () => void;
+    style?: ViewStyle;
 }) =>
 {
     return (
         <ImageBackground
-            style={styles.cardContainer}
-            resizeMode="cover"
+            style={[styles.cardContainer, style]}
+            resizeMode='cover'
             source={require('@/assets/images/card-image-example.png')}
         >
             <LinearGradient
@@ -87,7 +84,7 @@ const GridImageCard = ({
                         </View>
                     )}
 
-                    <PolygonButtonWhiteSmall
+                    <PolygonButtonCustom
                         text='Start'
                         onPress={onPress}
                     />
@@ -105,28 +102,30 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        paddingHorizontal: 16,
-        paddingBottom: 16
+        paddingHorizontal: 12,
+        paddingBottom: 12
     },
     cardContainer: {
         height: 288,
-        width: 160,
-        position: 'relative'
+        width: '100%',
+        position: 'relative',
+        marginRight: 16
     },
     triangle: {
         width: 0,
         height: 0,
-        borderLeftWidth: 20,
-        borderRightWidth: 20,
-        borderBottomWidth: 20,
+        borderLeftWidth: 40,
+        borderRightWidth: 40,
+        borderBottomWidth: 40,
         borderLeftColor: 'transparent',
         borderRightColor: 'transparent',
         borderBottomColor: '#000000',
         position: 'absolute',
-        top: -4,
-        right: -14,
+        top: -20,
+        right: -26,
         transform: [{ rotate: '45deg' }],
     },
 });
 
 export default GridImageCard;
+
