@@ -10,7 +10,10 @@
     },
     "preview": {
       "distribution": "internal",
-      "environment": "production"
+      "environment": "preview",
+      "ios": {
+        "image": "latest"
+      }
     },
     "production": {
       "autoIncrement": true
